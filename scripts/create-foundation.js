@@ -1,8 +1,5 @@
-#!/usr/bin/env node
-'use strict';
+const { carnesenDotCom, runAndExit } = require('..');
 
-const { foundationFactory, run } = require('..');
-
-const foundation = foundationFactory();
-
-run(foundation.create);
+runAndExit(async () => {
+  await carnesenDotCom.create();
+});
