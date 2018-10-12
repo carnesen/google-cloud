@@ -1,4 +1,4 @@
-import { getGitHash, runAndExit, removeTrailingDot, gcloud } from './util';
+import { getGitHash, runAndExit, removeTrailingDot, gcloud } from '../src/util';
 
 describe(__filename, () => {
   it('getGitHash returns a ten-character hash', async () => {

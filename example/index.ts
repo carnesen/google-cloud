@@ -1,5 +1,4 @@
-import { NamedApp, NamedAppOptions } from './app';
-import { runAndExit, gcloud } from './util';
+import { NamedApp, NamedAppOptions, runAndExit } from '../src';
 
 const projectId = 'carnesen-tmp';
 

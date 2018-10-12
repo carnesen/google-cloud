@@ -30,7 +30,9 @@ yarn-error.log*
 #Build generated
 dist/
 build/
+built/
 lib/
+tmp/
 
 # Serverless generated files
 .serverless/

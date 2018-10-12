@@ -24,24 +24,20 @@ export type NamedAppOptions = {
 
 export class NamedApp {
   private readonly zone: Zone;
-  private readonly projectId: string;
-  private readonly domainName: string;
-  private readonly services: ServiceOptions[];
+  private readonly options: NamedAppOptions;
 
-  constructor({ projectId, domainName, services }: NamedAppOptions) {
-    const dns = new DNS({ projectId });
-    this.zone = dns.zone(lodashKebabcase(domainName));
-    this.projectId = projectId;
-    this.domainName = domainName;
-    this.services = services;
+  constructor(options: NamedAppOptions) {
+    const dns = new DNS({ projectId: options.projectId });
+    this.zone = dns.zone(lodashKebabcase(options.domainName));
+    this.options = options;
   }
 
   private gcloud(options: GcloudOptions) {
-    return gcloud({ ...options, projectId: this.projectId });
+    return gcloud({ ...options, projectId: this.options.projectId });
   }
 
   private async createApp() {
-    const log = createLogger('app for project', this.projectId);
+    const log = createLogger('app for project', this.options.projectId);
     try {
       log.creating();
       await this.gcloud({
@@ -57,11 +53,11 @@ export class NamedApp {
   }
 
   private async createZone() {
-    const log = createLogger('dns zone', this.domainName);
+    const log = createLogger('dns zone', this.options.domainName);
     log.creating();
     await this.zone.get({
       autoCreate: true,
-      dnsName: this.domainName,
+      dnsName: this.options.domainName,
     } as GetConfig);
     log.maybeCreated();
   }
@@ -108,7 +104,7 @@ export class NamedApp {
     // await this.createApp();
     // await this.createZone();
     // await this.createDefaultService();
-    for (const serviceOptions of this.services) {
+    for (const serviceOptions of this.options.services) {
       await this.createService(serviceOptions);
     }
   }
