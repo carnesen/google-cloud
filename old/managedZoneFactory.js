@@ -1,6 +1,6 @@
 const GoogleCloudDns = require('@google-cloud/dns');
 
-const { createLogger } = require('./util');
+const { createLogger } = require('../src/util');
 
 const managedZoneFactory = ({ projectId, managedZoneName }) => {
   const googleCloudDns = new GoogleCloudDns({

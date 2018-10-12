@@ -1,4 +1,3 @@
-const { packageDir: redirectorPackageDir } = require('@carnesen/redirector');
 const domainMappingFactory = require('./domainMappingFactory');
 const managedZoneFactory = require('./managedZoneFactory');
 const serviceFactory = require('./serviceFactory');
@@ -37,14 +36,8 @@ const namedAppFactory = ({ projectId, managedZoneName }) => {
     };
   };
 
-  const defaultNamedService = namedServiceFactory({
-    packageDir: redirectorPackageDir,
-    serviceName: 'default',
-  });
-
   const create = async () => {
     await app.create();
-    await defaultNamedService.create();
   };
 
   return {

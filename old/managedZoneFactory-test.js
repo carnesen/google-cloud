@@ -1,7 +1,7 @@
 const { projectId, managedZoneName } = require('./constants-test');
-const { runAndExit, echo } = require('./util');
+const { runAndExit, echo } = require('../src/util');
 
-const managedZoneFactory = require('./managedZoneFactory');
+const managedZoneFactory = require('../src/managedZoneFactory');
 
 const managedZone = managedZoneFactory({
   projectId,

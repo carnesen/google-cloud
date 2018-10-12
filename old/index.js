@@ -1,5 +1,5 @@
-const { runAndExit } = require('./util');
-const namedAppFactory = require('./namedAppFactory');
+const { runAndExit } = require('../src/util');
+const namedAppFactory = require('../src/namedAppFactory');
 
 const carnesenDotCom = namedAppFactory({
   projectId: 'carnesen-209303',

@@ -1,5 +1,5 @@
 const { projectId, dnsName } = require('./constants-test');
-const { runAndExit } = require('./util');
+const { runAndExit } = require('../src/util');
 
 const domainMappingFactory = require('./domainMappingFactory');
 

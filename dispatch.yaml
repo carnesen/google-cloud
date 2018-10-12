@@ -1,0 +1,6 @@
+dispatch:
+  - url: "carnesen.com/*"
+    service: default
+
+  - url: "meme-me.carnesen.com/*"
+    service: meme-me

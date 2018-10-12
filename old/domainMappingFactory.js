@@ -1,4 +1,4 @@
-const { runGcloudCli, createLogger, stripRootLabel } = require('./util');
+const { runGcloudCli, createLogger, stripRootLabel } = require('../src/util');
 
 const domainMappingFactory = ({ projectId, getDnsName, resourceRecordFactory }) => {
   const create = async () => {

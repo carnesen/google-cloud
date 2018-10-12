@@ -1,7 +1,7 @@
 ### Node ###
 
 # TODO: Remove this when dependencies have stabilized
-package-lock.json
+package-lock.json*
 
 # Logs
 logs
