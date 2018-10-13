@@ -1,7 +1,7 @@
 ### Node ###
 
 # TODO: Remove this when dependencies have stabilized
-package-lock.json
+package-lock.json*
 
 # Logs
 logs
@@ -30,7 +30,9 @@ yarn-error.log*
 #Build generated
 dist/
 build/
+built/
 lib/
+tmp/
 
 # Serverless generated files
 .serverless/

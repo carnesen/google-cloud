@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig-base",
+  "compilerOptions": {
+    "outDir": "../tmp/example"
+  },
+  "references": [
+    {
+      "path": "../src"
+    }
+  ]
+}
