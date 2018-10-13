@@ -14,7 +14,7 @@ export const createLogger = (description: string, name: string) => {
   };
 
   return {
-    info: e(),
+    info: e(''),
     creating: e('Creating...'),
     created: e('Created'),
     alreadyCreated: e('Already exists'),

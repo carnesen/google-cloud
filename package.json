@@ -8,7 +8,9 @@
   },
   "scripts": {
     "check": "tslint --project .",
-    "compile": "tsc",
+    "clean": "rimraf lib/ tmp/",
+    "compile": "tsc --build",
+    "example": "ts-node example/index.ts",
     "fix": "npm run check -- --fix",
     "test": "npm run check && npm run unit-test",
     "unit-test": "jest"
@@ -24,12 +26,13 @@
   "devDependencies": {
     "@carnesen/tslint-config": "*",
     "@types/jest": "23.3.5",
-    "@types/node": "10.11.7",
     "@types/js-yaml": "3.11.2",
     "@types/lodash.kebabcase": "4.1.4",
+    "@types/node": "10.11.7",
     "@types/pkg-dir": "2.0.0",
-    "meme-me": "github:carnesen/meme-me",
     "jest": "23.6.0",
+    "meme-me": "github:carnesen/meme-me",
+    "rimraf": "2.6.2",
     "ts-jest": "23.10.4",
     "ts-node": "7.0.1",
     "tslint": "5.11.0",

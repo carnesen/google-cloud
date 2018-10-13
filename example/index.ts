@@ -7,7 +7,7 @@ const options: NamedAppOptions = {
   domainName: 'carnesen-tmp.com.',
   services: [
     {
-      serviceName: 'meme-me',
+      serviceName: 'www',
       packageName: 'meme-me',
     },
   ],

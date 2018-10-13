@@ -1,6 +1,5 @@
 dispatch:
-  - url: "carnesen.com/*"
+  - url: carnesen-tmp.com/
     service: default
-
-  - url: "meme-me.carnesen.com/*"
-    service: meme-me
+  - url: www.carnesen-tmp.com/
+    service: www

@@ -1,15 +1,15 @@
-import { DNS, Zone } from '@google-cloud/dns';
-
-import { REGION } from './constants';
-import { createLogger, gcloud, GcloudOptions } from './util';
-import lodashKebabcase = require('lodash.kebabcase');
-import { CreateOptions, GetConfig } from '@google-cloud/common';
-import pkgDir = require('pkg-dir');
 import { promisify } from 'util';
 import { writeFile } from 'fs';
 import { join } from 'path';
+
+import { DNS, Zone } from '@google-cloud/dns';
+import lodashKebabcase = require('lodash.kebabcase');
+import pkgDir = require('pkg-dir');
 import { dump } from 'js-yaml';
 import is from '@sindresorhus/is';
+
+import { REGION } from './constants';
+import { createLogger, gcloud, GcloudOptions, removeTrailingDot } from './util';
 
 export type ServiceOptions = {
   serviceName: string;
@@ -20,6 +20,11 @@ export type NamedAppOptions = {
   domainName: string;
   projectId: string;
   services: ServiceOptions[];
+};
+
+const DEFAULT_SERVICE_OPTIONS: ServiceOptions = {
+  serviceName: 'default',
+  packageName: '@carnesen/redirector',
 };
 
 export class NamedApp {
@@ -58,8 +63,78 @@ export class NamedApp {
     await this.zone.get({
       autoCreate: true,
       dnsName: this.options.domainName,
-    } as GetConfig);
+    } as any);
     log.maybeCreated();
+  }
+
+  private async createRoutingRules() {
+    const allServices = [DEFAULT_SERVICE_OPTIONS, ...this.options.services];
+    const fileName = 'dispatch.yaml';
+    await promisify(writeFile)(
+      fileName,
+      dump({
+        dispatch: allServices.map(({ serviceName }) => ({
+          url: `${removeTrailingDot(this.getSubdomainName(serviceName))}/`,
+          service: serviceName,
+        })),
+      }),
+    );
+    await this.gcloud({ args: ['app', 'deploy', fileName] });
+  }
+
+  private async createResourceRecord(options: { name: string; type: string; data: any }) {
+    const { name, type, data } = options;
+    const log = createLogger('record set', `${type} ${name} -> ${data}`);
+    const record = this.zone.record(type, {
+      name,
+      data,
+      ttl: 300,
+    });
+    log.creating();
+    try {
+      await this.zone.addRecords(record);
+      log.created();
+    } catch (ex) {
+      if (!ex.message.includes('already exists')) {
+        throw ex;
+      } else {
+        log.alreadyCreated();
+      }
+    }
+  }
+
+  private getSubdomainName(serviceName: string) {
+    const { domainName } = this.options;
+    return serviceName === 'default' ? domainName : `${serviceName}.${domainName}`;
+  }
+
+  private async createDomainMapping(serviceName: string) {
+    const subdomainName = this.getSubdomainName(serviceName);
+    const log = createLogger('domain mapping', subdomainName);
+    log.creating();
+    try {
+      await this.gcloud({
+        args: ['app', 'domain-mappings', 'create', removeTrailingDot(subdomainName)],
+      });
+    } catch (ex) {
+      if (!ex.message.includes('already exists')) {
+        throw ex;
+      } else {
+        log.alreadyCreated();
+      }
+    }
+    const description = await this.gcloud({
+      args: ['app', 'domain-mappings', 'describe', removeTrailingDot(subdomainName)],
+    });
+    // Note the resource records returned don't have CNAME value in proper canonical form
+    for (const resourceRecord of description.resourceRecords) {
+      const { rrdata, type } = resourceRecord;
+      await this.createResourceRecord({
+        type,
+        data: type === 'CNAME' ? `${rrdata}.` : rrdata,
+        name: subdomainName,
+      });
+    }
   }
 
   private async createService(options: ServiceOptions) {
@@ -72,6 +147,7 @@ export class NamedApp {
       throw new Error(`Failed to find package directory for "${packageName}"`);
     }
 
+    log.info('writing app.yaml...');
     await promisify(writeFile)(
       join(packageDir, 'app.yaml'),
       dump({
@@ -85,27 +161,32 @@ export class NamedApp {
       }),
     );
 
+    log.info('running "gcloud app deploy"...');
     await this.gcloud({
       args: ['app', 'deploy'],
       cwd: packageDir,
     });
 
+    await this.createDomainMapping(serviceName);
+
     log.created();
   }
 
   private async createDefaultService() {
-    return await this.createService({
-      serviceName: 'default',
-      packageName: '@carnesen/redirector',
-    });
+    return await this.createService(DEFAULT_SERVICE_OPTIONS);
+  }
+
+  private async createServices() {
+    for (const serviceOptions of this.options.services) {
+      await this.createService(serviceOptions);
+    }
   }
 
   public async create() {
     // await this.createApp();
     // await this.createZone();
     // await this.createDefaultService();
-    for (const serviceOptions of this.options.services) {
-      await this.createService(serviceOptions);
-    }
+    await this.createServices();
+    await this.createRoutingRules();
   }
 }
