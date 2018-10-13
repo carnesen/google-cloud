@@ -1,5 +1,0 @@
-dispatch:
-  - url: carnesen-tmp.com/
-    service: default
-  - url: www.carnesen-tmp.com/
-    service: www
