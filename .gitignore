@@ -27,6 +27,11 @@ yarn-error.log*
 .env
 .env.*
 
+# Google Cloud files
+app.yaml
+dispatch.yaml
+.gcloudignore
+
 #Build generated
 dist/
 build/
