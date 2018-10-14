@@ -8,7 +8,6 @@ import pkgDir = require('pkg-dir');
 import { dump } from 'js-yaml';
 import is from '@sindresorhus/is';
 
-import { REGION } from './constants';
 import { createLogger, gcloud, GcloudOptions, removeTrailingDot } from './util';
 
 export type ServiceOptions = {
@@ -45,8 +44,9 @@ export class NamedApp {
     const log = createLogger('app for project', this.options.projectId);
     try {
       log.creating();
+      // TODO: Parameterize "region"
       await this.gcloud({
-        args: ['app', 'create', `--region=${REGION}`],
+        args: ['app', 'create', `--region=us-central`],
       });
       log.created();
     } catch (ex) {
@@ -74,33 +74,12 @@ export class NamedApp {
       fileName,
       dump({
         dispatch: allServices.map(({ serviceName }) => ({
-          url: `${removeTrailingDot(this.getSubdomainName(serviceName))}/`,
+          url: `${removeTrailingDot(this.getSubdomainName(serviceName))}/*`,
           service: serviceName,
         })),
       }),
     );
     await this.gcloud({ args: ['app', 'deploy', fileName] });
-  }
-
-  private async createResourceRecord(options: { name: string; type: string; data: any }) {
-    const { name, type, data } = options;
-    const log = createLogger('record set', `${type} ${name} -> ${data}`);
-    const record = this.zone.record(type, {
-      name,
-      data,
-      ttl: 300,
-    });
-    log.creating();
-    try {
-      await this.zone.addRecords(record);
-      log.created();
-    } catch (ex) {
-      if (!ex.message.includes('already exists')) {
-        throw ex;
-      } else {
-        log.alreadyCreated();
-      }
-    }
   }
 
   private getSubdomainName(serviceName: string) {
@@ -116,6 +95,7 @@ export class NamedApp {
       await this.gcloud({
         args: ['app', 'domain-mappings', 'create', removeTrailingDot(subdomainName)],
       });
+      log.created();
     } catch (ex) {
       if (!ex.message.includes('already exists')) {
         throw ex;
@@ -123,17 +103,36 @@ export class NamedApp {
         log.alreadyCreated();
       }
     }
+  }
+
+  private async createCloudDnsRecords(serviceName: string) {
+    const subdomainName = this.getSubdomainName(serviceName);
+    const log = createLogger('Cloud DNS records', subdomainName);
+    log.creating();
     const description = await this.gcloud({
       args: ['app', 'domain-mappings', 'describe', removeTrailingDot(subdomainName)],
     });
-    // Note the resource records returned don't have CNAME value in proper canonical form
-    for (const resourceRecord of description.resourceRecords) {
-      const { rrdata, type } = resourceRecord;
-      await this.createResourceRecord({
-        type,
-        data: type === 'CNAME' ? `${rrdata}.` : rrdata,
+
+    const appResourceRecords: { rrdata: string; type: string }[] =
+      description.resourceRecords;
+
+    const records = appResourceRecords.map(({ rrdata, type }) =>
+      this.zone.record(type, {
         name: subdomainName,
-      });
+        data: type === 'CNAME' ? `${rrdata}.` : rrdata,
+        ttl: 300,
+      }),
+    );
+
+    try {
+      await this.zone.addRecords(records);
+      log.created();
+    } catch (ex) {
+      if (!ex.message.includes('already exists')) {
+        throw ex;
+      } else {
+        log.alreadyCreated();
+      }
     }
   }
 
@@ -147,7 +146,7 @@ export class NamedApp {
       throw new Error(`Failed to find package directory for "${packageName}"`);
     }
 
-    log.info('writing app.yaml...');
+    log.info('Writing app.yaml...');
     await promisify(writeFile)(
       join(packageDir, 'app.yaml'),
       dump({
@@ -158,35 +157,36 @@ export class NamedApp {
         basic_scaling: {
           max_instances: 3,
         },
+        handlers: [
+          {
+            url: '/.*',
+            secure: 'always',
+            redirect_http_response_code: 301,
+            script: 'auto',
+          },
+        ],
       }),
     );
 
-    log.info('running "gcloud app deploy"...');
+    log.info('Running "gcloud app deploy"...');
     await this.gcloud({
       args: ['app', 'deploy'],
       cwd: packageDir,
     });
 
     await this.createDomainMapping(serviceName);
-
+    await this.createCloudDnsRecords(serviceName);
     log.created();
   }
 
-  private async createDefaultService() {
-    return await this.createService(DEFAULT_SERVICE_OPTIONS);
-  }
-
-  private async createServices() {
+  public async create() {
+    await this.createApp();
+    await this.createZone();
+    await this.createService(DEFAULT_SERVICE_OPTIONS);
+    await this.createDomainMapping('default');
     for (const serviceOptions of this.options.services) {
       await this.createService(serviceOptions);
     }
-  }
-
-  public async create() {
-    // await this.createApp();
-    // await this.createZone();
-    // await this.createDefaultService();
-    await this.createServices();
     await this.createRoutingRules();
   }
 }

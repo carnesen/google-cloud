@@ -3,18 +3,14 @@ import { promisify } from 'util';
 
 const execFileAsync = promisify(execFile);
 
-export const echo = (...messages: (string | undefined)[]) => {
-  // tslint-disable-next-line no-console
-  console.log(...messages);
-};
+// tslint-disable-next-line no-console
+const echo = (data: any) => console.log(data);
 
 export const createLogger = (description: string, name: string) => {
-  const e = (message?: string) => (...moreMessages: string[]) => {
-    echo(`${description} "${name}":`, message, ...moreMessages);
-  };
+  const e = (message: string) => () => echo(`${description} "${name}": ${message}`);
 
   return {
-    info: e(''),
+    info: (message: string) => e(message)(),
     creating: e('Creating...'),
     created: e('Created'),
     alreadyCreated: e('Already exists'),
