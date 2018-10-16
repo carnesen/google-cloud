@@ -58,7 +58,7 @@ export const resolvePackageDir = (packageName: string) => {
   return packageDir;
 };
 
-export const createLogger = (description: string, name: string) => {
+export const logFactory = (description: string, name: string) => {
   const e = (message: string) => () => echo(`${description} "${name}": ${message}`);
 
   return {

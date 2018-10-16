@@ -11,14 +11,14 @@ type InheritedProps = {
   zoneName: string;
 };
 
-export type Props<T> = UniversalProps & InheritedProps & T;
+export type AllProps<T> = UniversalProps & InheritedProps & T;
 
 type ClassProps = {
   description: string;
 };
 
-type Asset<T> = Props<T> & {
-  props: Props<T>;
+type Asset<T> = AllProps<T> & {
+  props: AllProps<T>;
 };
 
 // type Factory<T, U> = (props: Props<T>) => U;

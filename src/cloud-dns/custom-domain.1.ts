@@ -2,7 +2,7 @@ import { Zone, DNS, Record } from '@google-cloud/dns';
 import { Asset, IAsset } from '../asset.1';
 import { ResourceRecord } from '../interface';
 
-export class CloudDnsCustomDomain extends Asset {
+export class CloudDnsCustomDomain extends Asset<T> {
   private readonly zone: Zone;
   private readonly records: Record[];
   constructor(
