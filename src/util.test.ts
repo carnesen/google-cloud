@@ -1,4 +1,4 @@
-import { getGitHash, runAndExit, removeTrailingDot, gcloud } from '../src/util';
+import { getGitHash, runAndExit, removeTrailingDot, addTrailingDot } from './util';
 
 describe(__filename, () => {
   it('getGitHash returns a ten-character hash', async () => {
@@ -7,17 +7,14 @@ describe(__filename, () => {
     expect(gitHash).toMatch(hexCharsRegex);
   });
 
-  it('stripRootLabel removes the trailing implicit root domain label from a dns name', async () => {
+  it('removeTrailingDot removes a trailing dot', async () => {
     expect(removeTrailingDot('.foo.')).toEqual('.foo');
+    expect(removeTrailingDot('.foo')).toEqual('.foo');
   });
 
-  it('gcloudFactory returns a function that runs the gcloud cli', async () => {
-    const result = await gcloud({
-      projectId: 'foo',
-      cwd: '.',
-      args: ['version'],
-    });
-    expect(result['Google Cloud SDK']).toMatch(/.*\..*\..*/);
+  it('addTrailingDot removes a trailing dot', async () => {
+    expect(addTrailingDot('.foo')).toEqual('.foo.');
+    expect(addTrailingDot('.foo.')).toEqual('.foo.');
   });
 
   it('runAndExit runs the provided async function and calls process.exit(0)', async () => {
