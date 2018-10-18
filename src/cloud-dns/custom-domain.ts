@@ -1,19 +1,17 @@
 import { Zone, DNS, Record } from '@google-cloud/dns';
-import { Asset } from '../asset';
+import { Asset, BaseProps, Context } from '../asset';
 import { ResourceRecord } from '../interface';
 
-export class CloudDnsCustomDomain extends Asset {
+type Props = BaseProps & { data: ResourceRecord[] };
+
+export class CloudDnsCustomDomain extends Asset<Props> {
   private readonly zone: Zone;
   private readonly records: Record[];
-  constructor(options: { projectId: string; zoneName: string; data: ResourceRecord[] }) {
-    const { projectId } = options;
-    super({
-      projectId,
-      description: 'Cloud DNS custom domain',
-      name: options.projectId,
-    });
-    this.zone = new Zone(new DNS({ projectId }), options.zoneName);
-    this.records = options.data.map(({ domainName, recordType, data }) =>
+  constructor(context: Context, props: Props) {
+    super(context, props);
+    const dns = new DNS({ projectId: this.context.projectId });
+    this.zone = new Zone(dns, this.context.zoneName);
+    this.records = this.props.data.map(({ domainName, recordType, data }) =>
       this.zone.record(recordType, {
         data,
         name: domainName,

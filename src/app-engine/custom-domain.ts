@@ -1,22 +1,21 @@
 import { removeTrailingDot, addTrailingDot } from '../util';
 import { Asset } from '../asset';
 
-export class AppEngineCustomDomain extends Asset {
-  private readonly domainName: string;
-  constructor(options: { projectId: string; domainName: string }) {
-    super({
-      projectId: options.projectId,
-      description: 'app engine custom domain',
-      name: options.domainName,
-    });
-    this.domainName = options.domainName;
-  }
+export type Props = {
+  domainName: string;
+};
 
+export class AppEngineCustomDomain extends Asset<Props> {
   public async create() {
     this.log.creating();
     try {
       await this.gcloud({
-        args: ['app', 'domain-mappings', 'create', removeTrailingDot(this.domainName)],
+        args: [
+          'app',
+          'domain-mappings',
+          'create',
+          removeTrailingDot(this.props.domainName),
+        ],
       });
       this.log.created();
     } catch (ex) {
@@ -30,7 +29,12 @@ export class AppEngineCustomDomain extends Asset {
 
   public async getResourceRecords() {
     const description = await this.gcloud({
-      args: ['app', 'domain-mappings', 'describe', removeTrailingDot(this.domainName)],
+      args: [
+        'app',
+        'domain-mappings',
+        'describe',
+        removeTrailingDot(this.props.domainName),
+      ],
     });
 
     const appResourceRecords: { rrdata: string; type: string }[] =
