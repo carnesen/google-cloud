@@ -1,26 +1,22 @@
-import { Zone, DNS, Record } from '@google-cloud/dns';
 import { Asset } from '../asset';
-import { ResourceRecord } from '../interface';
+import { Zone, DNS } from '@google-cloud/dns';
 
-export class CloudDns extends Asset {
-  private readonly zone: Zone;
-  constructor(options: { projectId: string; zoneName: string }) {
-    const { projectId } = options;
-    super({
-      projectId,
-      description: 'Cloud DNS',
-      name: options.zoneName,
-    });
-    this.zone = new Zone(new DNS({ projectId }), options.zoneName);
+export class CloudDns extends Asset<{}> {
+  public get name() {
+    return this.context.zoneName;
   }
-
   public async create(): Promise<never> {
     this.log.creating();
     throw new Error('Cloud DNS must be initialized manually');
   }
 
   public async getDomainName() {
-    await this.zone.get();
-    debugger;
+    const zone = new Zone(
+      new DNS({ projectId: this.context.projectId }),
+      this.context.zoneName,
+    );
+    await zone.get();
+    const domainName = zone.metadata.dnsName;
+    return domainName;
   }
 }

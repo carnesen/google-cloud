@@ -1,14 +1,11 @@
 import { Asset } from '../asset';
 
-export class AppEngine extends Asset {
-  constructor(options: { projectId: string }) {
-    super({
-      projectId: options.projectId,
-      description: 'app engine',
-      name: options.projectId,
-    });
-  }
+export type Props = {};
 
+export class AppEngine extends Asset<Props> {
+  public get name() {
+    return this.context.projectId;
+  }
   public async create() {
     this.log.creating();
     try {

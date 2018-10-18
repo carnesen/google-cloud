@@ -1,29 +1,31 @@
-import { Zone, DNS, Record } from '@google-cloud/dns';
-import { Asset, BaseProps, Context } from '../asset';
-import { ResourceRecord } from '../interface';
+import { Zone, DNS } from '@google-cloud/dns';
+import { Asset } from '../asset';
 
-type Props = BaseProps & { data: ResourceRecord[] };
+export type Props = {
+  records: {
+    domainName: string;
+    recordType: string;
+    rrdata: string[];
+  }[];
+};
 
 export class CloudDnsCustomDomain extends Asset<Props> {
-  private readonly zone: Zone;
-  private readonly records: Record[];
-  constructor(context: Context, props: Props) {
-    super(context, props);
+  public get name() {
+    return this.context.zoneName;
+  }
+  public async create() {
+    this.log.creating();
     const dns = new DNS({ projectId: this.context.projectId });
-    this.zone = new Zone(dns, this.context.zoneName);
-    this.records = this.props.data.map(({ domainName, recordType, data }) =>
-      this.zone.record(recordType, {
-        data,
+    const zone = new Zone(dns, this.context.zoneName);
+    const records = this.props.records.map(({ domainName, recordType, rrdata }) =>
+      zone.record(recordType, {
+        data: rrdata,
         name: domainName,
         ttl: 300,
       }),
     );
-  }
-
-  public async create() {
-    this.log.creating();
     try {
-      await this.zone.addRecords(this.records);
+      await zone.addRecords(records);
       this.log.created();
     } catch (ex) {
       if (!ex.message.includes('already exists')) {
@@ -32,6 +34,5 @@ export class CloudDnsCustomDomain extends Asset<Props> {
         this.log.alreadyCreated();
       }
     }
-    this.log.created();
   }
 }

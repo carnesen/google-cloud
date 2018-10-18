@@ -2,22 +2,25 @@ import { Asset } from './asset';
 import { AppEngine } from './app-engine';
 import { NamedNodejsService } from './named-nodejs-service';
 
-export class NamedApp extends Asset {
-  private readonly appEngine: AppEngine;
-  constructor(options: {
-    projectId: string;
-    nodejsServices: {
-      serviceName: string;
-      packageName: string;
-    }[];
-  }) {
-    const { projectId } = options;
-    super({ projectId, description: 'Named App', name: projectId });
-    this.appEngine = new AppEngine({ projectId });
-    this.defaultService = new NamedNodejsService(``);
-  }
+export type Props = {
+  nodejs: {
+    serviceName: string;
+    packageName: string;
+  }[];
+};
 
+export class NamedApp extends Asset<Props> {
   public async create() {
-    await this.appEngine.create();
+    const appEngine = this.factory(AppEngine, { name: this.context.projectId });
+    await appEngine.create();
+    const defaultService = this.factory(NamedNodejsService, {
+      serviceName: 'default',
+      packageName: '@carnesen/redirector',
+    });
+    await defaultService.create();
+    for (const options of this.props.nodejs) {
+      const nodejsService = this.factory(NamedNodejsService, options);
+      await nodejsService.create();
+    }
   }
 }

@@ -1,26 +1,20 @@
-import { resolvePackageDir } from '../util';
 import { Asset } from '../asset';
 
-export class AppEngineVersion extends Asset {
-  private readonly packageName: string;
-  constructor(options: { projectId: string; packageName: string }) {
-    super({
-      projectId: options.projectId,
-      description: 'app version for package',
-      name: options.packageName,
-    });
-    this.packageName = options.packageName;
-  }
+export type Props = {
+  rootDir: string;
+};
 
+export class AppEngineVersion extends Asset<Props> {
+  public get name() {
+    return this.props.rootDir;
+  }
+  // TODO: make more idempotent based on git hash for sake of alacrity
   public async create() {
     this.log.creating();
-    const packageDir = await resolvePackageDir(this.packageName);
-
     await this.gcloud({
       args: ['app', 'deploy'],
-      cwd: packageDir,
+      cwd: this.props.rootDir,
     });
-
     this.log.created();
   }
 }

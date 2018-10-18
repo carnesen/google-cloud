@@ -6,6 +6,9 @@ export type Props = {
 };
 
 export class AppEngineCustomDomain extends Asset<Props> {
+  public get name() {
+    return this.props.domainName;
+  }
   public async create() {
     this.log.creating();
     try {

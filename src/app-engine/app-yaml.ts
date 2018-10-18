@@ -1,23 +1,26 @@
-import { resolvePackageDir } from '../util';
-import { Asset, IAsset } from '../asset';
+import { Asset } from '../asset';
+
 import { promisify } from 'util';
 import { writeFile } from 'fs';
 import { dump } from 'js-yaml';
 import { join } from 'path';
 
-export type P = {
-  packageName: string;
+export type Props = {
+  rootDir: string;
   serviceName: string;
 };
 
-export class AppEngineAppYaml extends Asset<P> {
+export class AppEngineAppYaml extends Asset<Props> {
+  public get name() {
+    return this.props.rootDir;
+  }
   public async create() {
+    const { rootDir, serviceName } = this.props;
     this.log.creating();
-    const packageDir = resolvePackageDir(this.props.packageName);
     const contents = {
       runtime: 'nodejs8',
       env: 'standard',
-      service: this.props.serviceName,
+      service: serviceName,
       instance_class: 'B1',
       basic_scaling: {
         max_instances: 3,
@@ -31,11 +34,7 @@ export class AppEngineAppYaml extends Asset<P> {
         },
       ],
     };
-    await promisify(writeFile)(join(packageDir, 'app.yaml'), dump(contents));
-    await this.gcloud({
-      args: ['app', 'deploy'],
-      cwd: packageDir,
-    });
+    await promisify(writeFile)(join(rootDir, 'app.yaml'), dump(contents));
     this.log.created();
   }
 }
