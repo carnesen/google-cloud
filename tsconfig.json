@@ -1,24 +1,10 @@
 {
+  "extends": "./node_modules/@carnesen/tsconfig/nodejs/tsconfig.json",
   "include": [
     "src"
   ],
   "compilerOptions": {
     "rootDir": "./src",
-    "outDir": "./lib",
-    "pretty": true,
-    "lib": [
-      "es2017"
-    ],
-    "target": "es2017",
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "composite": true,
-    "noEmitOnError": true,
-    "strict": true,
-    "allowSyntheticDefaultImports": false,
-    "esModuleInterop": false,
+    "outDir": "./lib"
   },
 }

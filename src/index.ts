@@ -1,3 +1,2 @@
-// export { NamedApp, NamedAppOptions } from './old';
-
+export { NamedApp } from './named-app';
 export { runAndExit } from './util';

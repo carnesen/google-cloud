@@ -25,7 +25,7 @@ export class CloudDnsCustomDomain extends Asset<Props> {
       }),
     );
     try {
-      await zone.addRecords(records);
+      await (zone as any).addRecords(records);
       this.log.created();
     } catch (ex) {
       if (!ex.message.includes('already exists')) {
