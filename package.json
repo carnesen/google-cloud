@@ -7,14 +7,16 @@
     "node": ">=8.0.0"
   },
   "scripts": {
-    "build": "npm run clean && tsc",
+    "build": "npm run clean && tsc --project .",
     "build-watch": "npm run build -- --watch",
     "check": "tslint --project .",
     "clean": "rimraf lib/",
-    "example": "ts-node example/index.ts",
+    "example": "ts-node src/example.ts",
     "fix": "npm run check -- --fix",
     "test": "npm run check && npm run unit-test && npm run build",
-    "unit-test": "cross-env NODE_ENV=test jest src/"
+    "unit-test": "cross-env NODE_ENV=test jest src/",
+    "preversion": "npm test",
+    "postversion": "npm publish"
   },
   "dependencies": {
     "@carnesen/redirector": "0.0.0",
