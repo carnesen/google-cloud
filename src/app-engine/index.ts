@@ -1,6 +1,6 @@
 import { Asset } from '../asset';
 
-export type Props = {};
+type Props = null;
 
 export class AppEngine extends Asset<Props> {
   public get name() {

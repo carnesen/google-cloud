@@ -2,17 +2,16 @@ import { promisify } from 'util';
 import { execFile } from 'child_process';
 import { echo } from './util';
 
-export interface Context {
+type Context = {
   projectId: string;
-  zoneName: string;
-}
+};
 
 export interface IAsset<P> {
   context: Context;
   props: P;
 }
 
-export const logFactory = (instance: { name: string; constructor: { name: string } }) => {
+const logFactory = (instance: { name: string; constructor: { name: string } }) => {
   const e = (message: string) => () =>
     echo(`${instance.constructor.name} : ${instance.name} : ${message}`);
 
@@ -22,6 +21,8 @@ export const logFactory = (instance: { name: string; constructor: { name: string
     created: e('Created'),
     alreadyCreated: e('Already exists'),
     maybeCreated: e('Maybe created'),
+    deploying: e('Deploying...'),
+    deployed: e('Deployed'),
     destroying: e('Destroying...'),
     destroyed: e('Destroyed'),
     alreadyDestroyed: e('Does not exist'),

@@ -1,22 +1,26 @@
-import { runAndExit } from '../src';
-import { NamedApp } from './named-app';
+import { runAndExit, App, SiteType } from '../src';
 
 const projectId = 'carnesen-tmp';
 const zoneName = 'carnesen-tmp-com';
 
-const testApp = new NamedApp({
+const testApp = new App({
   context: {
     projectId,
-    zoneName,
   },
-  props: {
-    nodejs: [
-      {
-        serviceName: 'www',
-        packageName: 'meme-me',
-      },
-    ],
-  },
+  props: [
+    {
+      zoneName,
+      siteType: SiteType.static,
+      siteName: 'www',
+      packageName: '@carnesen/www',
+    },
+    {
+      zoneName,
+      siteType: SiteType.nodejs,
+      siteName: 'meme-me',
+      packageName: '@carnesen/meme-me',
+    },
+  ],
 });
 
 if (require.main === module) {

@@ -1,33 +1,34 @@
-import { removeTrailingDot } from '../util';
 import { Asset } from '../asset';
 import { promisify } from 'util';
 import { writeFile } from 'fs';
 import { dump } from 'js-yaml';
 
-export type Props = {
-  data: {
-    serviceName: string;
-    domainName: string;
-  }[];
+type Props = {
+  config: any;
 };
+
+const fileName = 'dispatch.yaml';
 
 export class AppEngineDispatchYaml extends Asset<Props> {
   public get name() {
-    return process.cwd();
+    return this.context.projectId;
   }
+
   public async create() {
     this.log.creating();
-    const fileName = 'dispatch.yaml';
-    await promisify(writeFile)(
-      fileName,
-      dump({
-        dispatch: this.props.data.map(({ serviceName, domainName }) => ({
-          url: `${removeTrailingDot(domainName)}/*`,
-          service: serviceName,
-        })),
-      }),
-    );
-    await this.gcloud({ args: ['app', 'deploy', fileName] });
+    await promisify(writeFile)(fileName, dump({ dispatch: this.props.config }));
     this.log.created();
+  }
+
+  public async deploy() {
+    this.log.deploying();
+    await this.gcloud({ args: ['app', 'deploy', fileName] });
+    this.log.deployed();
+  }
+
+  public async destroy() {
+    this.log.destroying();
+    // TODO
+    this.log.destroyed();
   }
 }
