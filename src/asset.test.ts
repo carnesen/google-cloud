@@ -12,7 +12,7 @@ describe(__filename, () => {
       }
     }
     const foo = new Foo({
-      context: { projectId: 'foo' },
+      context: { projectId: 'foo', requireResolve: require.resolve },
       props: null,
     });
     await foo.testGcloud();

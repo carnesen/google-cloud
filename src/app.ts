@@ -1,6 +1,6 @@
 import { Asset, IAsset } from './asset';
 import { AppEngine } from './app-engine';
-import { Site, SiteProps, SiteType } from './site';
+import { Site, SiteProps } from './site';
 import { AppEngineDispatchYaml } from './app-engine/dispatch-yaml';
 import { removeTrailingDot } from './util';
 
@@ -11,18 +11,13 @@ export class App extends Asset<Props> {
   public constructor(options: IAsset<Props>) {
     super(options);
     const sites = this.props.map(siteProps => this.factory(Site, siteProps));
-    const wwwSite = sites.find(site => site.props.siteName === 'www');
-    if (!wwwSite) {
-      throw new Error('Expected to find siteName "www"');
+    if (typeof sites[0] === 'undefined') {
+      throw new Error('You must define at least one site');
     }
-    const defaultSite = this.factory(Site, {
-      siteName: 'default',
-      siteType: SiteType.nodejs,
-      packageName: '@carnesen/redirector',
-      zoneName: wwwSite.props.zoneName,
-    });
-
-    this.sites = [defaultSite, ...sites];
+    if (sites[0].props.siteName !== 'default') {
+      throw new Error('The first siteName must be "default"');
+    }
+    this.sites = sites;
   }
 
   private async getDispatchConfig() {
@@ -40,6 +35,9 @@ export class App extends Asset<Props> {
   public async create() {
     const appEngine = this.factory(AppEngine, null);
     await appEngine.create();
+    for (const site of this.sites) {
+      await site.preValidate();
+    }
     for (const site of this.sites) {
       await site.create();
     }

@@ -19,7 +19,6 @@
     "postversion": "npm publish"
   },
   "dependencies": {
-    "@carnesen/redirector": "0.0.0",
     "@google-cloud/dns": "0.8.0",
     "@sindresorhus/is": "0.12.0",
     "js-yaml": "3.12.0",
@@ -27,9 +26,10 @@
   },
   "devDependencies": {
     "@carnesen/meme-me": "github:carnesen/meme-me",
+    "@carnesen/redirector": "0.0.0",
     "@carnesen/tsconfig": "0.0.1",
     "@carnesen/tslint-config": "0.0.2",
-    "@carnesen/www": "0.0.0-0",
+    "@carnesen/www": "0.0.0",
     "@types/jest": "23.3.7",
     "@types/js-yaml": "3.11.2",
     "@types/node": "10.12.0",

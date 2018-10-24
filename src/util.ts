@@ -1,7 +1,5 @@
 import { execFile } from 'child_process';
 import { promisify } from 'util';
-import pkgDir = require('pkg-dir');
-import is from '@sindresorhus/is';
 
 const execFileAsync = promisify(execFile);
 
@@ -41,11 +39,3 @@ export const getGitHash = async (cwd?: string) => {
 
 export const removeTrailingDot = (s: string) => s.replace(/\.$/, '');
 export const addTrailingDot = (s: string) => (s.slice(-1) === '.' ? s : `${s}.`);
-
-export const resolvePackageDir = (packageName: string) => {
-  const packageDir = pkgDir.sync(require.resolve(packageName));
-  if (is.null_(packageDir)) {
-    throw new Error(`Failed to find package directory for "${packageName}"`);
-  }
-  return packageDir;
-};

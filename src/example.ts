@@ -6,8 +6,15 @@ const zoneName = 'carnesen-tmp-com';
 const testApp = new App({
   context: {
     projectId,
+    requireResolve: require.resolve,
   },
   props: [
+    {
+      zoneName,
+      siteType: SiteType.nodejs,
+      siteName: 'default',
+      packageName: '@carnesen/redirector',
+    },
     {
       zoneName,
       siteType: SiteType.static,

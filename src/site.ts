@@ -2,11 +2,12 @@ import { Asset, IAsset } from './asset';
 import { AppEngineAppYaml } from './app-engine/app-yaml';
 import { AppEngineCustomDomain } from './app-engine/custom-domain';
 import { CloudDnsZone } from './cloud-dns-zone';
-import { resolvePackageDir } from './util';
 import { promisify } from 'util';
 import { stat } from 'fs';
 import { join } from 'path';
 import { AppEngineIgnoreFile } from './app-engine/ignore-file';
+import pkgDir = require('pkg-dir');
+import is from '@sindresorhus/is';
 
 export const enum SiteType {
   nodejs = 'nodejs',
@@ -16,7 +17,7 @@ export const enum SiteType {
 export type SiteProps = {
   zoneName: string;
   siteType: SiteType;
-  siteName: string;
+  siteName: 'default' | string;
   packageName: string;
 };
 
@@ -28,7 +29,11 @@ export class Site extends Asset<SiteProps> {
   }
 
   private get packageDir() {
-    return resolvePackageDir(this.props.packageName);
+    const packageDir = pkgDir.sync(require.resolve(this.props.packageName));
+    if (is.null_(packageDir)) {
+      throw new Error(`Failed to find package directory for "${this.props.packageName}"`);
+    }
+    return packageDir;
   }
 
   private async getServiceConfig() {

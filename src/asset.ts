@@ -4,6 +4,7 @@ import { echo } from './util';
 
 type Context = {
   projectId: string;
+  requireResolve: typeof require.resolve;
 };
 
 export interface IAsset<P> {
