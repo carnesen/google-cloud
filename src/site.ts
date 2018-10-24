@@ -22,6 +22,9 @@ export type SiteProps = {
 };
 
 export class Site extends Asset<SiteProps> {
+  get name() {
+    return this.props.siteName;
+  }
   private readonly cloudDnsZone: CloudDnsZone;
   public constructor(options: IAsset<SiteProps>) {
     super(options);
@@ -29,7 +32,7 @@ export class Site extends Asset<SiteProps> {
   }
 
   private get packageDir() {
-    const packageDir = pkgDir.sync(require.resolve(this.props.packageName));
+    const packageDir = pkgDir.sync(this.context.requireResolve(this.props.packageName));
     if (is.null_(packageDir)) {
       throw new Error(`Failed to find package directory for "${this.props.packageName}"`);
     }
@@ -84,6 +87,7 @@ export class Site extends Asset<SiteProps> {
   }
 
   public async preValidate() {
+    this.log.info('Pre-validating...');
     const messages: string[] = [];
     switch (this.props.siteType) {
       case SiteType.nodejs:
