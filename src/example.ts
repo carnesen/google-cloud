@@ -13,19 +13,19 @@ const testApp = new App({
       zoneName,
       siteType: SiteType.nodejs,
       siteName: 'default',
-      packageName: '@carnesen/redirector',
+      packageId: '@carnesen/redirector',
     },
     {
       zoneName,
       siteType: SiteType.static,
       siteName: 'www',
-      packageName: '@carnesen/www',
+      packageId: '@carnesen/www',
     },
     {
       zoneName,
       siteType: SiteType.nodejs,
       siteName: 'meme-me',
-      packageName: '@carnesen/meme-me',
+      packageId: '@carnesen/meme-me',
     },
   ],
 });

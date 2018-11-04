@@ -18,7 +18,7 @@ export type SiteProps = {
   zoneName: string;
   siteType: SiteType;
   siteName: 'default' | string;
-  packageName: string;
+  packageId: string;
 };
 
 export class Site extends Asset<SiteProps> {
@@ -32,9 +32,9 @@ export class Site extends Asset<SiteProps> {
   }
 
   private get packageDir() {
-    const packageDir = pkgDir.sync(this.context.requireResolve(this.props.packageName));
+    const packageDir = pkgDir.sync(this.context.requireResolve(this.props.packageId));
     if (is.null_(packageDir)) {
-      throw new Error(`Failed to find package directory for "${this.props.packageName}"`);
+      throw new Error(`Failed to find package directory for "${this.props.packageId}"`);
     }
     return packageDir;
   }
@@ -97,7 +97,7 @@ export class Site extends Asset<SiteProps> {
         const stats = await promisify(stat)(join(this.packageDir, 'dist/index.html'));
         if (!stats.isFile()) {
           messages.push(
-            `Expected to find dist/index.html in package "${this.props.packageName}"`,
+            `Expected to find dist/index.html in package "${this.props.packageId}"`,
           );
         }
         break;
