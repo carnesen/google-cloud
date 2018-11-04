@@ -1,7 +1,7 @@
 {
   "name": "@carnesen/google-cloud",
   "version": "0.0.0-0",
-  "description": "A Node.js library for Google Cloud",
+  "description": "A Node.js library for deploying static and Node.js web sites to Google Cloud Platform",
   "main": "lib/index.js",
   "engines": {
     "node": ">=8.0.0"
