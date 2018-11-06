@@ -1,21 +1,34 @@
 import { Asset, IAsset } from './asset';
 import { AppEngine } from './app-engine';
-import { Site, SiteProps } from './site';
+import { Site, SiteType } from './site';
 import { AppEngineDispatchYaml } from './app-engine/dispatch-yaml';
 import { removeTrailingDot } from './util';
 
-type Props = SiteProps[];
+// type Props = SiteProps[];
+
+type Props = {
+  defaultSite: {
+    packageId: string;
+    siteType: SiteType;
+    zoneName: string;
+  };
+  otherSites?: {
+    packageId: string;
+    siteName: string;
+    siteType: SiteType;
+    zoneName: string;
+  }[];
+};
 
 export class App extends Asset<Props> {
   private readonly sites: Site[];
   public constructor(options: IAsset<Props>) {
     super(options);
-    const sites = this.props.map(siteProps => this.factory(Site, siteProps));
-    if (typeof sites[0] === 'undefined') {
-      throw new Error('You must define at least one site');
-    }
-    if (sites[0].props.siteName !== 'default') {
-      throw new Error('The first siteName must be "default"');
+    const sites = [this.factory(Site, this.props.defaultSite)];
+    if (Array.isArray(this.props.otherSites)) {
+      sites.push(
+        ...this.props.otherSites.map(siteProps => this.factory(Site, siteProps)),
+      );
     }
     this.sites = sites;
   }
@@ -26,7 +39,7 @@ export class App extends Asset<Props> {
       const dnsName = await namedSite.getDnsName();
       dispatchConfig.push({
         url: `${removeTrailingDot(dnsName)}/*`,
-        service: namedSite.props.siteName,
+        service: namedSite.name,
       });
     }
     return dispatchConfig;

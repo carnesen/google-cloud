@@ -8,26 +8,27 @@ const testApp = new App({
     projectId,
     requireResolve: require.resolve,
   },
-  props: [
-    {
+  props: {
+    defaultSite: {
       zoneName,
       siteType: SiteType.nodejs,
-      siteName: 'default',
       packageId: '@carnesen/redirector',
     },
-    {
-      zoneName,
-      siteType: SiteType.static,
-      siteName: 'www',
-      packageId: '@carnesen/www',
-    },
-    {
-      zoneName,
-      siteType: SiteType.nodejs,
-      siteName: 'meme-me',
-      packageId: '@carnesen/meme-me',
-    },
-  ],
+    otherSites: [
+      {
+        zoneName,
+        siteType: SiteType.static,
+        siteName: 'www',
+        packageId: '@carnesen/www',
+      },
+      {
+        zoneName,
+        siteType: SiteType.nodejs,
+        siteName: 'meme-me',
+        packageId: '@carnesen/meme-me',
+      },
+    ],
+  },
 });
 
 if (require.main === module) {

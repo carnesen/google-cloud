@@ -4,7 +4,7 @@ import { AppEngineCustomDomain } from './app-engine/custom-domain';
 import { CloudDnsZone } from './cloud-dns-zone';
 import { promisify } from 'util';
 import { stat } from 'fs';
-import { join } from 'path';
+import { join, basename, dirname } from 'path';
 import { AppEngineIgnoreFile } from './app-engine/ignore-file';
 import pkgDir = require('pkg-dir');
 import is from '@sindresorhus/is';
@@ -15,15 +15,15 @@ export const enum SiteType {
 }
 
 export type SiteProps = {
-  zoneName: string;
-  siteType: SiteType;
-  siteName: 'default' | string;
   packageId: string;
+  siteName?: string;
+  siteType: SiteType;
+  zoneName: string;
 };
 
 export class Site extends Asset<SiteProps> {
   get name() {
-    return this.props.siteName;
+    return this.props.siteName || 'default';
   }
   private readonly cloudDnsZone: CloudDnsZone;
   public constructor(options: IAsset<SiteProps>) {
@@ -32,7 +32,10 @@ export class Site extends Asset<SiteProps> {
   }
 
   private get packageDir() {
-    const packageDir = pkgDir.sync(this.context.requireResolve(this.props.packageId));
+    // const packageDir = pkgDir.sync(this.context.requireResolve(this.props.packageId));
+    const packageDir = dirname(
+      this.context.requireResolve(`${this.props.packageId}/package.json`),
+    );
     if (is.null_(packageDir)) {
       throw new Error(`Failed to find package directory for "${this.props.packageId}"`);
     }
@@ -45,7 +48,7 @@ export class Site extends Asset<SiteProps> {
       basic_scaling: {
         max_instances: 3,
       },
-      service: this.props.siteName,
+      service: this.name,
       env: 'standard',
     };
     switch (this.props.siteType) {
@@ -108,9 +111,8 @@ export class Site extends Asset<SiteProps> {
   }
 
   public async getDnsName() {
-    const { siteName } = this.props;
     const rootDnsName = await this.cloudDnsZone.getDnsName();
-    const dnsName = siteName === 'default' ? rootDnsName : `${siteName}.${rootDnsName}`;
+    const dnsName = this.name === 'default' ? rootDnsName : `${this.name}.${rootDnsName}`;
     return dnsName;
   }
 
