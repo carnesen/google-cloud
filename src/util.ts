@@ -10,25 +10,6 @@ export const echo = (data: any) => {
   }
 };
 
-type AsyncFunc = (...args: any[]) => Promise<any>;
-
-export const runAndExit = async (func: AsyncFunc) => {
-  try {
-    const value = await func();
-    if (value) {
-      echo(value);
-    } else {
-      echo('Success :)');
-    }
-    process.exit(0);
-  } catch (err) {
-    echo('Failed :(');
-    echo(err.message);
-    echo(err.stack);
-    process.exit(1);
-  }
-};
-
 export const getGitHash = async (cwd?: string) => {
   const { stdout } = await execFileAsync('git', ['rev-parse', '--short=10', 'HEAD'], {
     encoding: 'utf8',

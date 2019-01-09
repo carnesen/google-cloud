@@ -1,18 +1,14 @@
-import { Asset, IAsset } from './asset';
+import { promisify } from 'util';
+import { stat } from 'fs';
+import { join, dirname } from 'path';
+
+import { Asset, AssetOptions } from './asset';
 import { AppEngineAppYaml } from './app-engine/app-yaml';
 import { AppEngineCustomDomain } from './app-engine/custom-domain';
 import { CloudDnsZone } from './cloud-dns-zone';
-import { promisify } from 'util';
-import { stat } from 'fs';
-import { join, basename, dirname } from 'path';
 import { AppEngineIgnoreFile } from './app-engine/ignore-file';
-import pkgDir = require('pkg-dir');
-import is from '@sindresorhus/is';
 
-export const enum SiteType {
-  nodejs = 'nodejs',
-  static = 'static',
-}
+export type SiteType = 'nodejs' | 'static';
 
 export type SiteProps = {
   packageId: string;
@@ -26,17 +22,16 @@ export class Site extends Asset<SiteProps> {
     return this.props.siteName || 'default';
   }
   private readonly cloudDnsZone: CloudDnsZone;
-  public constructor(options: IAsset<SiteProps>) {
+  public constructor(options: AssetOptions<SiteProps>) {
     super(options);
     this.cloudDnsZone = this.factory(CloudDnsZone, { zoneName: this.props.zoneName });
   }
 
   private get packageDir() {
-    // const packageDir = pkgDir.sync(this.context.requireResolve(this.props.packageId));
     const packageDir = dirname(
       this.context.requireResolve(`${this.props.packageId}/package.json`),
     );
-    if (is.null_(packageDir)) {
+    if (packageDir === null) {
       throw new Error(`Failed to find package directory for "${this.props.packageId}"`);
     }
     return packageDir;
@@ -52,7 +47,7 @@ export class Site extends Asset<SiteProps> {
       env: 'standard',
     };
     switch (this.props.siteType) {
-      case SiteType.nodejs:
+      case 'nodejs':
         return {
           ...baseConfig,
           runtime: 'nodejs8',
@@ -65,7 +60,7 @@ export class Site extends Asset<SiteProps> {
             },
           ],
         };
-      case SiteType.static:
+      case 'static':
         return {
           ...baseConfig,
           runtime: 'python27',
@@ -93,10 +88,10 @@ export class Site extends Asset<SiteProps> {
     this.log.info('Pre-validating...');
     const messages: string[] = [];
     switch (this.props.siteType) {
-      case SiteType.nodejs:
+      case 'nodejs':
         // TODO
         break;
-      case SiteType.static:
+      case 'static':
         const stats = await promisify(stat)(join(this.packageDir, 'dist/index.html'));
         if (!stats.isFile()) {
           messages.push(

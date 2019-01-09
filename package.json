@@ -1,55 +1,57 @@
 {
   "name": "@carnesen/google-cloud",
   "version": "0.0.0-0",
-  "description": "A Node.js library for deploying static and Node.js web sites to Google Cloud Platform",
+  "description": "A library for deploying websites to Google Cloud Platform",
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "engines": {
     "node": ">=8.0.0"
   },
   "scripts": {
-    "build": "npm run clean && tsc --project .",
-    "build-watch": "npm run build -- --watch",
-    "check": "tslint --project .",
-    "clean": "rimraf lib/",
+    "build": "rimraf lib && tsc --project tsconfig.build.json",
+    "build:watch": "npm run build -- --watch",
     "example": "ts-node src/example.ts",
-    "fix": "npm run check -- --fix",
-    "test": "npm run check && npm run unit-test && npm run build",
-    "unit-test": "cross-env NODE_ENV=test jest src/",
+    "lint": "tslint --project tsconfig.build.json",
+    "lint:fix": "npm run lint -- --fix",
+    "test": "npm run lint && npm run test:unit && npm run build",
+    "test:unit": "cross-env NODE_ENV=test jest src",
+    "test:unit:coverage": "npm run test:unit -- --watch --coverage",
+    "test:unit:watch": "npm run test:unit -- --watch",
     "preversion": "npm test",
     "postversion": "npm publish"
   },
   "dependencies": {
-    "@google-cloud/dns": "0.8.0",
-    "@sindresorhus/is": "0.12.0",
-    "js-yaml": "3.12.0",
+    "@google-cloud/dns": "0.9.1",
+    "@types/js-yaml": "3.11.4",
+    "@types/pkg-dir": "2.0.0",
+    "js-yaml": "3.12.1",
     "pkg-dir": "3.0.0"
   },
   "devDependencies": {
+    "@carnesen/cli": "0.1.0-1",
     "@carnesen/meme-me": "github:carnesen/meme-me",
     "@carnesen/redirector": "0.0.0",
-    "@carnesen/tsconfig": "0.0.1",
-    "@carnesen/tslint-config": "0.0.2",
+    "@carnesen/tsconfig": "0.1.0",
+    "@carnesen/tslint-config": "0.1.2",
     "@carnesen/www": "0.0.0",
-    "@types/jest": "23.3.7",
-    "@types/js-yaml": "3.11.2",
-    "@types/node": "10.12.0",
-    "@types/pkg-dir": "2.0.0",
+    "@types/jest": "23.3.12",
+    "@types/node": "^8.10.39",
     "cross-env": "5.2.0",
     "jest": "23.6.0",
-    "rimraf": "2.6.2",
-    "ts-jest": "23.10.4",
+    "rimraf": "2.6.3",
+    "ts-jest": "23.10.5",
     "ts-node": "7.0.1",
-    "tslint": "5.11.0",
-    "typescript": "3.1.3"
+    "tslint": "5.12.0",
+    "typescript": "3.2.2"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/carnesen/gcp.git"
+    "url": "git+https://github.com/carnesen/google-cloud.git"
   },
   "author": "Chris Arnesen",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/carnesen/gcp/issues"
+    "url": "https://github.com/carnesen/google-cloud/issues"
   },
-  "homepage": "https://github.com/carnesen/gcp"
+  "homepage": "https://github.com/carnesen/google-cloud"
 }

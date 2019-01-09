@@ -2,12 +2,12 @@ import { promisify } from 'util';
 import { execFile } from 'child_process';
 import { echo } from './util';
 
-type Context = {
+export type Context = {
   projectId: string;
   requireResolve: typeof require.resolve;
 };
 
-export interface IAsset<P> {
+export interface AssetOptions<P> {
   context: Context;
   props: P;
 }
@@ -31,12 +31,12 @@ const logFactory = (instance: { name: string; constructor: { name: string } }) =
   };
 };
 
-export class Asset<P> implements IAsset<P> {
+export class Asset<P> implements AssetOptions<P> {
   public readonly context: Context;
   public readonly props: P;
   public readonly log: ReturnType<typeof logFactory>;
 
-  public constructor(options: IAsset<P>) {
+  public constructor(options: AssetOptions<P>) {
     this.context = options.context;
     this.props = options.props;
     this.log = logFactory(this);
@@ -48,7 +48,7 @@ export class Asset<P> implements IAsset<P> {
 
   public factory<P, A>(
     ctor: {
-      new (options: IAsset<P>): A;
+      new (options: AssetOptions<P>): A;
     },
     props: P,
   ) {

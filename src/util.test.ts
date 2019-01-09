@@ -1,4 +1,4 @@
-import { getGitHash, runAndExit, removeTrailingDot, addTrailingDot } from './util';
+import { getGitHash, removeTrailingDot, addTrailingDot } from './util';
 
 describe(__filename, () => {
   it('getGitHash returns a ten-character hash', async () => {
@@ -15,16 +15,5 @@ describe(__filename, () => {
   it('addTrailingDot removes a trailing dot', async () => {
     expect(addTrailingDot('.foo')).toEqual('.foo.');
     expect(addTrailingDot('.foo.')).toEqual('.foo.');
-  });
-
-  it('runAndExit runs the provided async function and calls process.exit(0)', async () => {
-    const mockAsyncFunc = jest.fn();
-    const originalProcessExit = process.exit;
-    const mockProcessExit = jest.fn();
-    (process as any).exit = mockProcessExit;
-    await runAndExit(mockAsyncFunc);
-    process.exit = originalProcessExit;
-    expect(mockAsyncFunc.mock.calls).toEqual([[]]);
-    expect(mockProcessExit.mock.calls).toEqual([[0]]);
   });
 });

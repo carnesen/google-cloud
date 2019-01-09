@@ -1,12 +1,10 @@
-import { Asset, IAsset } from './asset';
+import { Asset, AssetOptions } from './asset';
 import { AppEngine } from './app-engine';
 import { Site, SiteType } from './site';
 import { AppEngineDispatchYaml } from './app-engine/dispatch-yaml';
 import { removeTrailingDot } from './util';
 
-// type Props = SiteProps[];
-
-type Props = {
+export type AppProps = {
   defaultSite: {
     packageId: string;
     siteType: SiteType;
@@ -20,9 +18,9 @@ type Props = {
   }[];
 };
 
-export class App extends Asset<Props> {
+export class App extends Asset<AppProps> {
   private readonly sites: Site[];
-  public constructor(options: IAsset<Props>) {
+  public constructor(options: AssetOptions<AppProps>) {
     super(options);
     const sites = [this.factory(Site, this.props.defaultSite)];
     if (Array.isArray(this.props.otherSites)) {
