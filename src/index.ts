@@ -13,21 +13,14 @@ export type DeployAppOptions = {
     packageId: string;
     siteName: string;
   }[];
-  requireResolve?: typeof require.resolve;
 };
 
 export function deployApp(options: DeployAppOptions) {
-  const {
-    projectId,
-    requireResolve = require.resolve,
-    zoneName,
-    defaultSite,
-    otherSites = [],
-  } = options;
+  const { projectId, zoneName, defaultSite, otherSites = [] } = options;
   const app = new App({
     context: {
       projectId,
-      requireResolve,
+      requireResolve: require.resolve,
     },
     props: {
       defaultSite: { ...defaultSite, zoneName },

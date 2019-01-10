@@ -31,9 +31,6 @@ export class Site extends Asset<SiteProps> {
     const packageDir = dirname(
       this.context.requireResolve(`${this.props.packageId}/package.json`),
     );
-    if (packageDir === null) {
-      throw new Error(`Failed to find package directory for "${this.props.packageId}"`);
-    }
     return packageDir;
   }
 

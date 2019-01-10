@@ -23,14 +23,12 @@
   "dependencies": {
     "@google-cloud/dns": "0.9.1",
     "@types/js-yaml": "3.11.4",
-    "@types/pkg-dir": "2.0.0",
-    "js-yaml": "3.12.1",
-    "pkg-dir": "3.0.0"
+    "js-yaml": "3.12.1"
   },
   "devDependencies": {
-    "@carnesen/cli": "0.1.0-1",
     "@carnesen/meme-me": "github:carnesen/meme-me",
     "@carnesen/redirector": "0.0.0",
+    "@carnesen/run-and-exit": "0.1.0",
     "@carnesen/tsconfig": "0.1.0",
     "@carnesen/tslint-config": "0.1.2",
     "@carnesen/www": "0.0.0",
