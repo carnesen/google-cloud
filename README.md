@@ -138,10 +138,10 @@ The package directory is uploaded to Google Cloud as-is. In particular that mean
 Similar to Node.js sites, the package directory is uploaded to Google Cloud as-is. The root of the package, however, is not what gets served by App Engine. Instead by convention it's assumed that the `dist` subdirectory that contains the static content that you want to serve. If that convention doesn't suit you, please just let me know and I'd be happy to parameterize it.
 
 ## More information
-This library doesn't have many unit tests, but I use it on a semi-regular basis to deploy sites to [carnesen.com](https://carnesen.com). If you encounter any bugs or have any questions or feature requests, please don't hesitate to file an issue or submit a pull request on this project's repository on GitHub.
+This library doesn't have many unit tests, but I use it on a semi-regular basis to deploy sites to [carnesen.com](https://carnesen.com). To be sure, I don't get much traffic on those sites, but my GCP bill is typically less than a dollar a month! If you encounter any bugs or have any questions or feature requests, please don't hesitate to file an issue or submit a pull request on this project's repository on GitHub.
 
 ## Related
--[@carnesen/carnesen-dot-com](https://github.com/carnesen/carnesen-dot-com): Automates deployment of carnesen.com to Google Cloud Platform
+- [@carnesen/carnesen-dot-com](https://github.com/carnesen/carnesen-dot-com): Automates deployment of carnesen.com to Google Cloud Platform
 - [@carnesen/cli](https://github.com/carnesen/cli): A library for building Node.js command-line interfaces
 - [@carnesen/tslint-config](https://github.com/carnesen/tslint-config): TSLint configurations for `@carnesen` projects
 - [@carnesen/tsconfig](https://github.com/carnesen/tsconfig): TypeScript configurations for `@carnesen` projects
