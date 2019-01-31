@@ -3,7 +3,7 @@ import { getGitHash, removeTrailingDot, addTrailingDot } from './util';
 describe(__filename, () => {
   it('getGitHash returns a ten-character hash', async () => {
     const gitHash = await getGitHash();
-    const hexCharsRegex = /[a-f0-9][10]/;
+    const hexCharsRegex = /^[a-f0-9]{10}$/;
     expect(gitHash).toMatch(hexCharsRegex);
   });
 
