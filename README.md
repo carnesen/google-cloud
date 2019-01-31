@@ -125,14 +125,6 @@ Deploys one or more sites to Google Cloud
 ```
 `packageId` can be a relative path like `../sites/site-x` or a package name like `@carnesen/redirector`. By convention the "default site" is the "apex" of the domain. For example if your domain name is "example.com" then your "default site" is "example.com".
 
-#### packageId
-Internally, `@carnesen/google-cloud` does the following to locate your site code:
-
-```ts
-const packageDir = path.dirname(require.resolve(`${packageId}/package.json`));
-```
-For example, right now for me in this project, `path.dirname(require.resolve('@carnesen/meme-me/package.json'))` resolves to `'/Users/carnesen/GitHub/google-cloud/node_modules/@carnesen/meme-me'`. Keep in mind that if you don't want to `npm publish` your sites/services, `npm` allows dependencies to be specified [as GitHub URLs](https://docs.npmjs.com/files/package.json#github-urls). Also, you can use [npm link](https://docs.npmjs.com/cli/link.html) to install local dependencies that are kept in sync automatically via symlinks.
-
 #### otherSites
 Optional.
 ```ts
