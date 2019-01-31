@@ -110,38 +110,23 @@ Site : meme-me : Pre-validating...
 
 ## API
 
-### deployApp(options)
-An `async` function that takes an object of type `DeployAppOptions` and deploys one or more sites to Google Cloud. 
-
-```ts
-type DeployAppOptions = {
-  projectId: string;
-  zoneName: string;
-  defaultSite: {
-    siteType: 'nodejs' | 'static';
-    packageId: string;
-  };
-  otherSites?: {
-    siteType: 'nodejs' | 'static';
-    packageId: string;
-    siteName: string;
-  }[];
-};
-```
+### deployApp({projectId, zoneName, defaultSite, otherSites?)
+Deploys one or more sites to Google Cloud
 #### projectId
-Unique identifier for a Google Cloud project
-
+`string`. Unique identifier for a Google Cloud project
 #### zoneName
-Unique identifier for a Cloud DNS zone in the project identified by `projectId`. In some places in the Google Cloud API and documentation, the "zone name" is referred to as the "zone ID".
-
+`string`. Unique identifier for a Cloud DNS zone. In some places documentation, this referred to as "zone ID".
 #### defaultSite
-In the parlance of Google App Engine, an app is comprised of "services" one of which is the "default service". In the parlance of this project, that's the "default site". A "site" corresponds to a "service" together with other associated resources such as Cloud DNS records. By this project's conventions, the "default site" serves the "apex" domain of the zone, i.e. the domain that doesn't have a subdomain part. E.g. "example.com." is the [FQDN](https://en.wikipedia.org/wiki/Fully_qualified_domain_name) of the apex of the zone "example.com".
-
-#### siteType
-`'nodejs'` or `'static'`
+```ts
+{
+  siteType: 'nodejs' | 'static';
+  packageId: string;
+}
+```
+`packageId` can be a relative path like `../sites/site-x` or a package name like `@carnesen/redirector`. By convention the "default site" is the "apex" of the domain. For example if your domain name is "example.com" then your "default site" is "example.com".
 
 #### packageId
-Package name/location of site code/content to be deployed. Can be a relative path like `../sites/site-x` or a package name like `@carnesen/redirector`. Internally, `@carnesen/google-cloud` does the following to locate your site code:
+Internally, `@carnesen/google-cloud` does the following to locate your site code:
 
 ```ts
 const packageDir = path.dirname(require.resolve(`${packageId}/package.json`));
@@ -149,6 +134,15 @@ const packageDir = path.dirname(require.resolve(`${packageId}/package.json`));
 For example, right now for me in this project, `path.dirname(require.resolve('@carnesen/meme-me/package.json'))` resolves to `'/Users/carnesen/GitHub/google-cloud/node_modules/@carnesen/meme-me'`. Keep in mind that if you don't want to `npm publish` your sites/services, `npm` allows dependencies to be specified [as GitHub URLs](https://docs.npmjs.com/files/package.json#github-urls). Also, you can use [npm link](https://docs.npmjs.com/cli/link.html) to install local dependencies that are kept in sync automatically via symlinks.
 
 #### otherSites
+Optional.
+```ts
+{
+  siteType: 'nodejs' | 'static';
+  packageId: string;
+  siteName: string;
+}[];
+```
+
 Only the default site is required, but an App Engine app can serve any number of other sites/services too. Each item in the `otherSites` array has the same `siteType` and `packageId` properties as `defaultSite` as well as an additional property `siteName` that defines the subdomain on which this site will be served. If the domain name is carnesen.com and `siteName` is `'meme-me'`, that site will be served at [meme-me.carnesen.com](https://meme-me.carnesen.com/).
 
 ## Conventions
