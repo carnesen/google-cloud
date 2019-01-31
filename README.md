@@ -3,7 +3,7 @@
 A Node.js library for deploying websites to Google Cloud Platform
 
 ## Features
-This library can be used to automate the deployment of [static websites](https://en.wikipedia.org/wiki/Static_web_page) and Node.js services to Google Cloud Platform (GCP) with minimal configuration and just a handful of conventions. Its features include:
+This library can be used to automate the deployment of [static websites](https://en.wikipedia.org/wiki/Static_web_page) and [Node.js services](https://en.wikipedia.org/wiki/Node.js) to Google Cloud Platform (GCP) with minimal configuration and just a handful of conventions. Its features include:
 
 - Custom domains
 - [https](https://en.wikipedia.org/wiki/HTTPS)
@@ -15,17 +15,41 @@ This library can be used to automate the deployment of [static websites](https:/
 ```
 npm install @carnesen/google-cloud
 ```
-The package includes runtime JavaScript files suitable for Node.js >=8 as well as the corresponding TypeScript type declarations. In addition to installing this library from npm, you'll also need to do the following one-time steps if you haven't already:
+The package includes runtime JavaScript files suitable for Node.js >=8 as well as the corresponding TypeScript type declarations. There are also a number of one-time manual setup steps that you'll need to do if you haven't already:
 
-- Install the [Google Cloud SDK](https://cloud.google.com/sdk/), and make sure the `gcloud` command-line utility is on your [PATH](https://en.wikipedia.org/wiki/PATH_(variable)) with valid credentials initialized on your system.
+#### Create a project
+Sign in to the [Google Cloud console](https://console.cloud.google.com) and create a new ["project"](https://console.cloud.google.com/project) and note its "project ID", which you'll need later.
 
-- Purchase a domain name using [Google Domains](https://domains.google) or any other [registrar](https://en.wikipedia.org/wiki/Domain_name_registrar).
+#### Purchase a domain name
+Use [Google Domains](https://domains.google) or any other [registrar](https://en.wikipedia.org/wiki/Domain_name_registrar) to purchase a top-level domain, e.g. "example.com". Your sites and services will be served at the apex "example.com" and on subdomains "www.example.com". 
 
-- Sign in to the [Google Cloud console](https://console.cloud.google.com) and create a new ["project"](https://console.cloud.google.com/project) and note its "project ID", which you'll need later.
+#### Create a Cloud DNS zone
+In the [Google Cloud console](https://console.cloud.google.com), navigate to "Network Services" > "Cloud DNS". Follow the prompts to create a new public "zone". Note its "zone name", which you'll need later.
 
-- In "Network Services" > "Cloud DNS", create a new public "zone" for your domain name, and take note of its "zone name", which you'll need later.
+#### Delegate name resolution to Google Cloud
+In the [Google Cloud console](https://console.cloud.google.com), navigate to "Network Services" > "Cloud DNS". Click on the "Registrar Setup" link in the upper right-hand corner. This reveals the "NS" (name server) records for your managed zone. Copy these NS records over to your domain registrar. Details differ by provider. [Here's how to do it with Google Domains](https://support.google.com/domains/answer/3290309?hl=en).
 
-- Clicking on the "Registrar Setup" link in the upper right-hand corner of the Cloud DNS console reveals the "NS" (name server) records for your new zone. Copy these NS records over to your domain registrar. Details differ by provider, but [here's the help article for how to do it with Google Domains](https://support.google.com/domains/answer/3290309?hl=en).
+#### [Install the Google Cloud SDK](https://cloud.google.com/sdk/install)
+When the SDK is properly installed you should see, e.g.:
+```
+$ gcloud -v
+Google Cloud SDK 232.0.0
+bq 2.0.40
+core 2019.01.27
+gsutil 4.35
+```
+
+#### `gcloud auth login`
+Sets authentication credentials for the `gcloud` command-line utility
+
+#### `gcloud auth application-default login`
+Sets ["Application Default Credentials"](https://cloud.google.com/docs/authentication/production#providing_credentials_to_your_application) for use by the `@google-cloud` Node.js SDKs.
+
+#### `gcloud config set project <project id>`
+Set the current active "project" for the `gcloud` CLI.
+
+#### `gcloud app create`
+Follow the prompts to initialize your project for "App Engine". You'll be asked to choose a region for your app. This cannot be changed later.
 
 ## Usage
 
