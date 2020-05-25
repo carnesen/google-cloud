@@ -8,7 +8,7 @@
     "node": ">=8.0.0"
   },
   "scripts": {
-    "build": "rimraf lib && tsc --project tsconfig.build.json",
+    "build": "rimraf lib && tsc",
     "example": "ts-node src/example.ts",
     "lint": "tslint --project tsconfig.build.json",
     "lint:fix": "npm run lint -- --fix",
