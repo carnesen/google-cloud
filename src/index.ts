@@ -15,7 +15,7 @@ export type DeployAppOptions = {
   }[];
 };
 
-export function deployApp(options: DeployAppOptions) {
+export async function deployApp(options: DeployAppOptions): Promise<void> {
   const { projectId, zoneName, defaultSite, otherSites = [] } = options;
   const app = new App({
     context: {
@@ -24,8 +24,8 @@ export function deployApp(options: DeployAppOptions) {
     },
     props: {
       defaultSite: { ...defaultSite, zoneName },
-      otherSites: otherSites.map(otherSite => ({ ...otherSite, zoneName })),
+      otherSites: otherSites.map((otherSite) => ({ ...otherSite, zoneName })),
     },
   });
-  return app.create();
+  await app.create();
 }

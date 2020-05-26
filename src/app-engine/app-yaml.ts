@@ -1,9 +1,8 @@
-import { Asset } from '../asset';
-
 import { promisify } from 'util';
 import { writeFile } from 'fs';
 import { dump } from 'js-yaml';
 import { join, basename } from 'path';
+import { Asset } from '../asset';
 
 type Props = {
   packageDir: string;
@@ -11,18 +10,18 @@ type Props = {
 };
 
 export class AppEngineAppYaml extends Asset<Props> {
-  public get name() {
+  public get name(): string {
     return basename(this.props.packageDir);
   }
 
-  public async create() {
+  public async create(): Promise<void> {
     const { packageDir, config } = this.props;
     this.log.creating();
     await promisify(writeFile)(join(packageDir, 'app.yaml'), dump(config));
     this.log.created();
   }
 
-  public async deploy() {
+  public async deploy(): Promise<void> {
     this.log.deploying();
     await this.gcloud({
       args: ['app', 'deploy'],
@@ -31,7 +30,7 @@ export class AppEngineAppYaml extends Asset<Props> {
     this.log.deployed();
   }
 
-  public async destroy() {
+  public async destroy(): Promise<void> {
     this.log.destroying();
     // TODO
     this.log.destroyed();

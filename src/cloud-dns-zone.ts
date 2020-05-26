@@ -1,5 +1,5 @@
-import { Asset } from './asset';
 import { Zone as GoogleCloudZone, DNS } from '@google-cloud/dns';
+import { Asset } from './asset';
 import { addTrailingDot } from './util';
 
 type Props = {
@@ -7,16 +7,14 @@ type Props = {
 };
 
 export class CloudDnsZone extends Asset<Props> {
-  public get name() {
+  public get name(): string {
     return this.props.zoneName;
   }
 
   public async create(): Promise<never> {
     this.log.creating();
     throw new Error(
-      `Cloud DNS must be initialized manually https://console.cloud.google.com/net-services/dns/zones?project=${
-        this.context.projectId
-      }`,
+      `Cloud DNS must be initialized manually https://console.cloud.google.com/net-services/dns/zones?project=${this.context.projectId}`,
     );
   }
 
@@ -29,7 +27,7 @@ export class CloudDnsZone extends Asset<Props> {
     return zone;
   }
 
-  public async getDnsName() {
+  public async getDnsName(): Promise<string> {
     const zone = await this.getGoogleCloudZone();
     const dnsName = addTrailingDot(zone.metadata.dnsName);
     return dnsName;
@@ -41,7 +39,7 @@ export class CloudDnsZone extends Asset<Props> {
       recordType: string;
       rrdata: string[];
     }[],
-  ) {
+  ): Promise<void> {
     this.log.info('Adding records');
     const zone = await this.getGoogleCloudZone();
     const records = data.map(({ dnsName, recordType, rrdata }) =>

@@ -3,10 +3,11 @@ import { Asset } from '../asset';
 type Props = null;
 
 export class AppEngine extends Asset<Props> {
-  public get name() {
+  public get name(): string {
     return this.context.projectId;
   }
-  public async create() {
+
+  public async create(): Promise<void> {
     this.log.creating();
     try {
       // TODO: Parameterize "region"

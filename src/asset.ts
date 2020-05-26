@@ -33,7 +33,9 @@ const logFactory = (instance: { name: string; constructor: { name: string } }) =
 
 export class Asset<P> implements AssetOptions<P> {
   public readonly context: Context;
+
   public readonly props: P;
+
   public readonly log: ReturnType<typeof logFactory>;
 
   public constructor(options: AssetOptions<P>) {
@@ -42,20 +44,21 @@ export class Asset<P> implements AssetOptions<P> {
     this.log = logFactory(this);
   }
 
+  /* eslint-disable class-methods-use-this */
   public get name(): string {
     return '"name" getter should be overridden by subclass';
   }
 
   public factory<P, A>(
-    ctor: {
+    Ctor: {
       new (options: AssetOptions<P>): A;
     },
     props: P,
-  ) {
-    return new ctor({ context: this.context, props });
+  ): A {
+    return new Ctor({ context: this.context, props });
   }
 
-  public async gcloud(options: { cwd?: string; args: string[] }) {
+  public async gcloud(options: { cwd?: string; args: string[] }): Promise<any> {
     const defaultArgs = [
       `--project=${this.context.projectId}`,
       '--quiet',

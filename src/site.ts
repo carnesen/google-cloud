@@ -18,10 +18,12 @@ export type SiteProps = {
 };
 
 export class Site extends Asset<SiteProps> {
-  get name() {
+  get name(): string {
     return this.props.siteName || 'default';
   }
+
   private readonly cloudDnsZone: CloudDnsZone;
+
   public constructor(options: AssetOptions<SiteProps>) {
     super(options);
     this.cloudDnsZone = this.factory(CloudDnsZone, { zoneName: this.props.zoneName });
@@ -81,14 +83,15 @@ export class Site extends Asset<SiteProps> {
     }
   }
 
-  public async preValidate() {
+  public async preValidate(): Promise<string[]> {
     this.log.info('Pre-validating...');
     const messages: string[] = [];
     switch (this.props.siteType) {
-      case 'nodejs':
+      case 'nodejs': {
         // TODO
         break;
-      case 'static':
+      }
+      case 'static': {
         const stats = await promisify(stat)(join(this.packageDir, 'dist/index.html'));
         if (!stats.isFile()) {
           messages.push(
@@ -96,19 +99,21 @@ export class Site extends Asset<SiteProps> {
           );
         }
         break;
-      default:
+      }
+      default: {
         messages.push(`Unknown siteType "${this.props.siteType}"`);
+      }
     }
     return messages;
   }
 
-  public async getDnsName() {
+  public async getDnsName(): Promise<string> {
     const rootDnsName = await this.cloudDnsZone.getDnsName();
     const dnsName = this.name === 'default' ? rootDnsName : `${this.name}.${rootDnsName}`;
     return dnsName;
   }
 
-  public async create() {
+  public async create(): Promise<void> {
     const config = await this.getServiceConfig();
     const appYaml = this.factory(AppEngineAppYaml, {
       config,
