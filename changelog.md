@@ -1,6 +1,6 @@
 # `@carnesen/google-cloud` change log
 
-## [Unreleased]
+## [UNRELEASED]
 ### Breaking
 - Drop support for Node.js 8
 ### Internal

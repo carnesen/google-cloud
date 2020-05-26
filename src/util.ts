@@ -3,20 +3,24 @@ import { promisify } from 'util';
 
 const execFileAsync = promisify(execFile);
 
-export const echo = (data: any) => {
+export function echo(...args: Parameters<typeof console.log>): void {
   if (process.env.NODE_ENV !== 'test') {
-    // tslint-disable-next-line no-console
-    console.log(data);
+    console.log(...args); // eslint-disable-line no-console
   }
-};
+}
 
-export const getGitHash = async (cwd?: string) => {
+export async function getGitHash(cwd?: string): Promise<string> {
   const { stdout } = await execFileAsync('git', ['rev-parse', '--short=10', 'HEAD'], {
     encoding: 'utf8',
     cwd,
   });
   return stdout.replace(/\n/g, '');
-};
+}
 
-export const removeTrailingDot = (s: string) => s.replace(/\.$/, '');
-export const addTrailingDot = (s: string) => (s.slice(-1) === '.' ? s : `${s}.`);
+export function removeTrailingDot(str: string): string {
+  return str.replace(/\.$/, '');
+}
+
+export function addTrailingDot(s: string): string {
+  return s.slice(-1) === '.' ? s : `${s}.`;
+}

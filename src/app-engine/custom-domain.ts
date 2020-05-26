@@ -6,10 +6,11 @@ type Props = {
 };
 
 export class AppEngineCustomDomain extends Asset<Props> {
-  public get name() {
+  public get name(): string {
     return this.props.dnsName;
   }
-  public async create() {
+
+  public async create(): Promise<void> {
     this.log.creating();
     try {
       await this.gcloud({
@@ -25,7 +26,12 @@ export class AppEngineCustomDomain extends Asset<Props> {
     }
   }
 
-  public async getResourceRecords() {
+  public async getResourceRecords(): Promise<
+    {
+      type: string;
+      rrdata: string;
+    }[]
+  > {
     const description = await this.gcloud({
       args: ['app', 'domain-mappings', 'describe', removeTrailingDot(this.props.dnsName)],
     });

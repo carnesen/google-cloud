@@ -20,12 +20,13 @@ export type AppProps = {
 
 export class App extends Asset<AppProps> {
   private readonly sites: Site[];
+
   public constructor(options: AssetOptions<AppProps>) {
     super(options);
     const sites = [this.factory(Site, this.props.defaultSite)];
     if (Array.isArray(this.props.otherSites)) {
       sites.push(
-        ...this.props.otherSites.map(siteProps => this.factory(Site, siteProps)),
+        ...this.props.otherSites.map((siteProps) => this.factory(Site, siteProps)),
       );
     }
     this.sites = sites;
@@ -43,7 +44,7 @@ export class App extends Asset<AppProps> {
     return dispatchConfig;
   }
 
-  public async create() {
+  public async create(): Promise<void> {
     const appEngine = this.factory(AppEngine, null);
     await appEngine.create();
     for (const site of this.sites) {
