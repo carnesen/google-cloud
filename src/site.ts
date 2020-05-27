@@ -49,7 +49,7 @@ export class Site extends Asset<SiteProps> {
       case 'nodejs':
         return {
           ...baseConfig,
-          runtime: 'nodejs8',
+          runtime: 'nodejs12',
           handlers: [
             {
               url: '/.*',
