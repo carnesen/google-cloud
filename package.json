@@ -13,7 +13,8 @@
     "lint": "eslint --ext .ts src/",
     "fix": "npm run lint -- --fix",
     "test": "npm run lint && npm run unit-test && npm run build",
-    "unit-test": "cross-env NODE_ENV=test jest src"
+    "unit-test": "cross-env NODE_ENV=test jest src",
+    "prepublishOnly": "npm run test"
   },
   "dependencies": {
     "@google-cloud/dns": "2.0.0",
