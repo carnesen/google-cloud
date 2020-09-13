@@ -31,7 +31,7 @@ export class Site extends Asset<SiteProps> {
 		});
 	}
 
-	private get packageDir() {
+	private get packageDir(): string {
 		const packageDir = dirname(
 			this.context.requireResolve(`${this.props.packageId}/package.json`),
 		);
@@ -39,10 +39,15 @@ export class Site extends Asset<SiteProps> {
 	}
 
 	private async getServiceConfig() {
+		// https://cloud.google.com/appengine/docs/standard/nodejs/config/appref
 		const baseConfig = {
+			// If you use basic scaling, App Engine attempts to keep your cost low,
+			// even though that may result in higher latency as the volume of
+			// incoming requests increases.
+			// https://cloud.google.com/appengine/docs/standard/java/how-instances-are-managed#apps_with_basic_scaling
 			instance_class: 'B1',
 			basic_scaling: {
-				max_instances: 3,
+				max_instances: 3, // to cap runaway costs
 			},
 			service: this.name,
 			env: 'standard',

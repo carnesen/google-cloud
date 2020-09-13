@@ -1,6 +1,6 @@
-# @carnesen/google-cloud [![build status badge](https://github.com/carnesen/google-cloud/workflows/test/badge.svg)](https://github.com/carnesen/google-cloud/actions?query=workflow%3Atest+branch%3Amaster) [![npm version badge](https://badge.fury.io/js/%40carnesen%2Fgoogle-cloud.svg)](https://www.npmjs.com/package/@carnesen/google-cloud)
-
 A Node.js library for deploying websites and Node.js services to Google Cloud Platform (GCP) using Google App Engine
+
+[![build status badge](https://github.com/carnesen/google-cloud/workflows/test/badge.svg)](https://github.com/carnesen/google-cloud/actions?query=workflow%3Atest+branch%3Amaster) [![npm version badge](https://badge.fury.io/js/%40carnesen%2Fgoogle-cloud.svg)](https://www.npmjs.com/package/@carnesen/google-cloud)
 
 ## Features
 This library can be used to automate the deployment of [static websites](https://en.wikipedia.org/wiki/Static_web_page) and [Node.js services](https://en.wikipedia.org/wiki/Node.js) to GCP with minimal configuration and just a handful of conventions. Its features include:
