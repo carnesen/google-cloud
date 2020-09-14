@@ -1,6 +1,6 @@
 # **@carnesen/google-cloud** changelog
 
-## Unreleased
+## 0.2.0 - 2020-09-13
 
 ### Added
 
