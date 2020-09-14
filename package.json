@@ -1,6 +1,6 @@
 {
 	"name": "@carnesen/google-cloud",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "A library for deploying websites to Google Cloud Platform",
 	"main": "lib/index.js",
 	"types": "lib/index.d.ts",
@@ -13,13 +13,13 @@
 		"lint": "eslint --ext .ts src/",
 		"fix": "npm run lint -- --fix",
 		"test": "npm run lint && npm run unit-test && npm run build",
-		"unit-test": "cross-env NODE_ENV=test jest src",
+		"unit-test": "NODE_ENV=test jest src",
 		"prepublishOnly": "npm run test"
 	},
 	"dependencies": {
-		"@google-cloud/dns": "2.0.2",
-		"@types/js-yaml": "3.12.5",
-		"js-yaml": "3.14.0"
+		"@google-cloud/dns": "^2.0.2",
+		"@types/js-yaml": "^3.12.5",
+		"js-yaml": "^3.14.0"
 	},
 	"devDependencies": {
 		"@carnesen/meme-me": "github:carnesen/meme-me#2020.5.0",
@@ -27,21 +27,17 @@
 		"@carnesen/run-and-exit": "0.3.2",
 		"@carnesen/tsconfig": "0.4.0",
 		"@carnesen/www": "2020.8.0",
-		"@types/jest": "26.0.10",
-		"@types/node": "^14.6.0",
-		"cross-env": "7.0.2",
-		"eslint": "7.7.0",
+		"@types/jest": "26.0.13",
+		"@types/node": "14.10.1",
+		"eslint": "7.9.0",
 		"eslint-config-carnesen": "4.6.0",
 		"jest": "26.4.2",
 		"rimraf": "3.0.2",
-		"ts-jest": "26.2.0",
+		"ts-jest": "26.3.0",
 		"ts-node": "9.0.0",
 		"typescript": "4.0.2"
 	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/carnesen/google-cloud.git"
-	},
+	"repository": "github:carnesen/google-cloud",
 	"author": "Chris Arnesen",
 	"license": "MIT",
 	"bugs": {
