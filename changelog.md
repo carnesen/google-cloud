@@ -2,6 +2,8 @@
 
 ## Upcoming
 
+## carnesen-google-cloud-0.3.0 (2022-02-26)
+
 - Upgrade to Node.js 16 both in this project and in deployed App Engine ones
 
 ## 0.2.0 - 2020-09-13
