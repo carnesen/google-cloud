@@ -1,3 +1,4 @@
+import { errorLikeFactory } from '@carnesen/error-like';
 import { Zone as GoogleCloudZone, DNS } from '@google-cloud/dns';
 import { Asset } from './asset';
 import { addTrailingDot } from './util';
@@ -52,9 +53,10 @@ export class CloudDnsZone extends Asset<Props> {
 		try {
 			await (zone as any).addRecords(records);
 			this.log.created();
-		} catch (ex) {
-			if (!ex.message.includes('already exists')) {
-				throw ex;
+		} catch (exception) {
+			const errorLike = errorLikeFactory(exception);
+			if (!errorLike.message.includes('already exists')) {
+				throw exception;
 			} else {
 				this.log.alreadyCreated();
 			}

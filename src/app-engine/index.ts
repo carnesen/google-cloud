@@ -1,3 +1,4 @@
+import { errorLikeFactory } from '@carnesen/error-like';
 import { Asset } from '../asset';
 
 type Props = null;
@@ -15,9 +16,10 @@ export class AppEngine extends Asset<Props> {
 				args: ['app', 'create', `--region=us-central`],
 			});
 			this.log.created();
-		} catch (ex) {
-			if (!ex.message.includes('already contains')) {
-				throw ex;
+		} catch (exception) {
+			const errorLike = errorLikeFactory(exception);
+			if (!errorLike.message.includes('already contains')) {
+				throw exception;
 			}
 			this.log.alreadyCreated();
 		}
