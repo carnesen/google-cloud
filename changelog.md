@@ -1,5 +1,9 @@
 # **@carnesen/google-cloud** changelog
 
+## Upcoming
+
+- Upgrade to Node.js 16 both in this project and in deployed App Engine ones
+
 ## 0.2.0 - 2020-09-13
 
 ### Added

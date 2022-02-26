@@ -5,37 +5,38 @@
 	"main": "lib/index.js",
 	"types": "lib/index.d.ts",
 	"engines": {
-		"node": ">=12.0.0"
+		"node": ">=16.0.0"
 	},
 	"scripts": {
-		"build": "rimraf lib && tsc",
+		"build": "rm -rf lib && tsc",
 		"example": "ts-node src/example.ts",
 		"lint": "eslint --ext .ts src/",
-		"fix": "npm run lint -- --fix",
+		"lint:fix": "npm run lint -- --fix",
+		"release": "carnesen-dev release --semverBump",
 		"test": "npm run lint && npm run unit-test && npm run build",
-		"unit-test": "NODE_ENV=test jest src",
-		"prepublishOnly": "npm run test"
+		"unit-test": "NODE_ENV=test jest src"
 	},
 	"dependencies": {
-		"@google-cloud/dns": "^2.0.2",
-		"@types/js-yaml": "^3.12.5",
-		"js-yaml": "^3.14.0"
+		"@carnesen/error-like": "^0.0.0",
+		"@google-cloud/dns": "^2.2.4",
+		"@types/js-yaml": "^4.0.5",
+		"js-yaml": "^4.1.0"
 	},
 	"devDependencies": {
-		"@carnesen/meme-me": "github:carnesen/meme-me#2020.5.0",
-		"@carnesen/redirector": "0.2.0",
-		"@carnesen/run-and-exit": "0.3.2",
-		"@carnesen/tsconfig": "0.4.0",
-		"@carnesen/www": "2020.8.0",
-		"@types/jest": "26.0.13",
-		"@types/node": "14.10.1",
-		"eslint": "7.9.0",
-		"eslint-config-carnesen": "4.6.0",
-		"jest": "26.4.2",
-		"rimraf": "3.0.2",
-		"ts-jest": "26.3.0",
-		"ts-node": "9.0.0",
-		"typescript": "4.0.2"
+		"@carnesen/dev": "0.1.1",
+		"@carnesen/meme-me": "github:carnesen/meme-me#2020.8.0",
+		"@carnesen/redirector": "0.3.0",
+		"@carnesen/run-and-exit": "1.0.0",
+		"@carnesen/tsconfig": "0.4.1",
+		"@carnesen/www": "2022.2.0",
+		"@types/jest": "27.4.1",
+		"@types/node": "17.0.21",
+		"eslint": "^7.32.0",
+		"eslint-config-carnesen": "7.0.0",
+		"jest": "27.5.1",
+		"ts-jest": "27.1.3",
+		"ts-node": "^10.5.0",
+		"typescript": "^4.5.5"
 	},
 	"repository": "github:carnesen/google-cloud",
 	"author": "Chris Arnesen",
@@ -46,6 +47,8 @@
 	"homepage": "https://github.com/carnesen/google-cloud",
 	"files": [
 		"src",
-		"lib"
+		"!src/**/__tests__",
+		"lib",
+		"!lib/**/__tests__"
 	]
 }

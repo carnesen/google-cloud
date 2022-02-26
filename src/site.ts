@@ -56,7 +56,7 @@ export class Site extends Asset<SiteProps> {
 			case 'nodejs':
 				return {
 					...baseConfig,
-					runtime: 'nodejs12',
+					runtime: 'nodejs16',
 					handlers: [
 						{
 							url: '/.*',

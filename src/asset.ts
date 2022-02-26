@@ -34,14 +34,14 @@ const logFactory = (instance: {
 	};
 };
 
-export class Asset<P> implements AssetOptions<P> {
+export class Asset<Props> implements AssetOptions<Props> {
 	public readonly context: Context;
 
-	public readonly props: P;
+	public readonly props: Props;
 
 	public readonly log: ReturnType<typeof logFactory>;
 
-	public constructor(options: AssetOptions<P>) {
+	public constructor(options: AssetOptions<Props>) {
 		this.context = options.context;
 		this.props = options.props;
 		this.log = logFactory(this);

@@ -1,3 +1,4 @@
+import { errorLikeFactory } from '@carnesen/error-like';
 import { removeTrailingDot, addTrailingDot } from '../util';
 import { Asset } from '../asset';
 
@@ -22,9 +23,10 @@ export class AppEngineCustomDomain extends Asset<Props> {
 				],
 			});
 			this.log.created();
-		} catch (ex) {
-			if (!ex.message.includes('already exists')) {
-				throw ex;
+		} catch (exception) {
+			const errorLike = errorLikeFactory(exception);
+			if (!errorLike.message.includes('already exists')) {
+				throw exception;
 			} else {
 				this.log.alreadyCreated();
 			}
