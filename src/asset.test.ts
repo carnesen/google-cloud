@@ -6,7 +6,11 @@ describe(__filename, () => {
 	it(
 		'gcloud runs the gcloud cli',
 		async () => {
-			class Foo extends Asset<null> {
+			class Foo extends Asset<{ name: string }> {
+				public get name(): string {
+					return this.props.name;
+				}
+
 				public async testGcloud() {
 					const result = await this.gcloud({
 						cwd: '.',
@@ -17,7 +21,7 @@ describe(__filename, () => {
 			}
 			const foo = new Foo({
 				context: { projectId: 'foo', requireResolve: require.resolve },
-				props: null,
+				props: { name: 'carnesen' },
 			});
 			await foo.testGcloud();
 		},

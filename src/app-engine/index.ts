@@ -9,19 +9,19 @@ export class AppEngine extends Asset<Props> {
 	}
 
 	public async create(): Promise<void> {
-		this.log.creating();
+		this.logger.creating();
 		try {
 			// TODO: Parameterize "region"
 			await this.gcloud({
 				args: ['app', 'create', `--region=us-central`],
 			});
-			this.log.created();
+			this.logger.created();
 		} catch (exception) {
 			const errorLike = errorLikeFactory(exception);
 			if (!errorLike.message.includes('already contains')) {
 				throw exception;
 			}
-			this.log.alreadyCreated();
+			this.logger.alreadyCreated();
 		}
 	}
 }

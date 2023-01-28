@@ -12,7 +12,7 @@ export class AppEngineCustomDomain extends Asset<Props> {
 	}
 
 	public async create(): Promise<void> {
-		this.log.creating();
+		this.logger.creating();
 		try {
 			await this.gcloud({
 				args: [
@@ -22,13 +22,13 @@ export class AppEngineCustomDomain extends Asset<Props> {
 					removeTrailingDot(this.props.dnsName),
 				],
 			});
-			this.log.created();
+			this.logger.created();
 		} catch (exception) {
 			const errorLike = errorLikeFactory(exception);
 			if (!errorLike.message.includes('already exists')) {
 				throw exception;
 			} else {
-				this.log.alreadyCreated();
+				this.logger.alreadyCreated();
 			}
 		}
 	}

@@ -18,17 +18,17 @@ export class AppEngineIgnoreFile extends Asset<Props> {
 	}
 
 	public async create(): Promise<void> {
-		this.log.creating();
+		this.logger.creating();
 		await promisify(writeFile)(
 			join(this.props.packageDir, fileName),
 			fileContents,
 		);
-		this.log.created();
+		this.logger.created();
 	}
 
 	public async destroy(): Promise<void> {
-		this.log.destroying();
+		this.logger.destroying();
 		// TODO
-		this.log.destroyed();
+		this.logger.destroyed();
 	}
 }
