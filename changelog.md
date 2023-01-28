@@ -2,6 +2,8 @@
 
 ## Upcoming
 
+## carnesen-google-cloud-0.4.0 (2023-01-28)
+
 - Performance: Call `site.create` in parallel. This dramatically speeds up the deployment of a multi-site app.
 
 ## carnesen-google-cloud-0.3.0 (2022-02-26)
