@@ -13,7 +13,7 @@ export class CloudDnsZone extends Asset<Props> {
 	}
 
 	public async create(): Promise<never> {
-		this.log.creating();
+		this.logger.creating();
 		throw new Error(
 			`Cloud DNS must be initialized manually https://console.cloud.google.com/net-services/dns/zones?project=${this.context.projectId}`,
 		);
@@ -41,7 +41,7 @@ export class CloudDnsZone extends Asset<Props> {
 			rrdata: string[];
 		}[],
 	): Promise<void> {
-		this.log.info('Adding records');
+		this.logger.info('Adding records');
 		const zone = await this.getGoogleCloudZone();
 		const records = data.map(({ dnsName, recordType, rrdata }) =>
 			zone.record(recordType, {
@@ -52,13 +52,13 @@ export class CloudDnsZone extends Asset<Props> {
 		);
 		try {
 			await (zone as any).addRecords(records);
-			this.log.created();
+			this.logger.created();
 		} catch (exception) {
 			const errorLike = errorLikeFactory(exception);
 			if (!errorLike.message.includes('already exists')) {
 				throw exception;
 			} else {
-				this.log.alreadyCreated();
+				this.logger.alreadyCreated();
 			}
 		}
 	}

@@ -2,6 +2,8 @@
 
 ## Upcoming
 
+- Performance: Call `site.create` in parallel. This dramatically speeds up the deployment of a multi-site app.
+
 ## carnesen-google-cloud-0.3.0 (2022-02-26)
 
 - Upgrade to Node.js 16 both in this project and in deployed App Engine ones

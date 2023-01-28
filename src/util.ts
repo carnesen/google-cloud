@@ -3,7 +3,7 @@ import { promisify } from 'util';
 
 const execFileAsync = promisify(execFile);
 
-export function echo(...args: Parameters<typeof console.log>): void {
+export function consoleLog(...args: Parameters<typeof console.log>): void {
 	if (process.env.NODE_ENV !== 'test') {
 		console.log(...args); // eslint-disable-line no-console
 	}

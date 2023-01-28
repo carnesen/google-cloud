@@ -15,20 +15,20 @@ export class AppEngineDispatchYaml extends Asset<Props> {
 	}
 
 	public async create(): Promise<void> {
-		this.log.creating();
+		this.logger.creating();
 		await promisify(writeFile)(fileName, dump({ dispatch: this.props.config }));
-		this.log.created();
+		this.logger.created();
 	}
 
 	public async deploy(): Promise<void> {
-		this.log.deploying();
+		this.logger.deploying();
 		await this.gcloud({ args: ['app', 'deploy', fileName] });
-		this.log.deployed();
+		this.logger.deployed();
 	}
 
 	public async destroy(): Promise<void> {
-		this.log.destroying();
+		this.logger.destroying();
 		// TODO
-		this.log.destroyed();
+		this.logger.destroyed();
 	}
 }

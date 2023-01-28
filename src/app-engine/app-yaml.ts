@@ -16,23 +16,23 @@ export class AppEngineAppYaml extends Asset<Props> {
 
 	public async create(): Promise<void> {
 		const { packageDir, config } = this.props;
-		this.log.creating();
+		this.logger.creating();
 		await promisify(writeFile)(join(packageDir, 'app.yaml'), dump(config));
-		this.log.created();
+		this.logger.created();
 	}
 
 	public async deploy(): Promise<void> {
-		this.log.deploying();
+		this.logger.deploying();
 		await this.gcloud({
 			args: ['app', 'deploy'],
 			cwd: this.props.packageDir,
 		});
-		this.log.deployed();
+		this.logger.deployed();
 	}
 
 	public async destroy(): Promise<void> {
-		this.log.destroying();
+		this.logger.destroying();
 		// TODO
-		this.log.destroyed();
+		this.logger.destroyed();
 	}
 }

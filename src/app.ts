@@ -19,15 +19,19 @@ export type AppProps = {
 };
 
 export class App extends Asset<AppProps> {
+	public get name(): string {
+		return this.props.defaultSite.packageId;
+	}
+
 	private readonly sites: Site[];
 
 	public constructor(options: AssetOptions<AppProps>) {
 		super(options);
-		const sites = [this.factory(Site, this.props.defaultSite)];
+		const sites = [this.assetFactory(Site, this.props.defaultSite)];
 		if (Array.isArray(this.props.otherSites)) {
 			sites.push(
 				...this.props.otherSites.map((siteProps) =>
-					this.factory(Site, siteProps),
+					this.assetFactory(Site, siteProps),
 				),
 			);
 		}
@@ -47,16 +51,18 @@ export class App extends Asset<AppProps> {
 	}
 
 	public async create(): Promise<void> {
-		const appEngine = this.factory(AppEngine, null);
+		const appEngine = this.assetFactory(AppEngine, null);
 		await appEngine.create();
 		for (const site of this.sites) {
 			await site.preValidate();
 		}
-		for (const site of this.sites) {
-			await site.create();
-		}
+		await Promise.all(
+			this.sites.map(async (site) => {
+				await site.create();
+			}),
+		);
 		const dispatchConfig = await this.getDispatchConfig();
-		const dispatchYaml = this.factory(AppEngineDispatchYaml, {
+		const dispatchYaml = this.assetFactory(AppEngineDispatchYaml, {
 			config: dispatchConfig,
 		});
 		await dispatchYaml.create();

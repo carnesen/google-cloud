@@ -26,7 +26,7 @@ export class Site extends Asset<SiteProps> {
 
 	public constructor(options: AssetOptions<SiteProps>) {
 		super(options);
-		this.cloudDnsZone = this.factory(CloudDnsZone, {
+		this.cloudDnsZone = this.assetFactory(CloudDnsZone, {
 			zoneName: this.props.zoneName,
 		});
 	}
@@ -41,9 +41,9 @@ export class Site extends Asset<SiteProps> {
 	private async getServiceConfig() {
 		// https://cloud.google.com/appengine/docs/standard/nodejs/config/appref
 		const baseConfig = {
-			// If you use basic scaling, App Engine attempts to keep your cost low,
-			// even though that may result in higher latency as the volume of
-			// incoming requests increases.
+			// With basic scaling, App Engine attempts to keep $ cost low, even
+			// though that may result in higher latency as the volume of incoming
+			// requests increases.
 			// https://cloud.google.com/appengine/docs/standard/java/how-instances-are-managed#apps_with_basic_scaling
 			instance_class: 'B1',
 			basic_scaling: {
@@ -91,7 +91,7 @@ export class Site extends Asset<SiteProps> {
 	}
 
 	public async preValidate(): Promise<string[]> {
-		this.log.info('Pre-validating...');
+		this.logger.info('Pre-validating...');
 		const messages: string[] = [];
 		switch (this.props.siteType) {
 			case 'nodejs': {
@@ -125,11 +125,11 @@ export class Site extends Asset<SiteProps> {
 
 	public async create(): Promise<void> {
 		const config = await this.getServiceConfig();
-		const appYaml = this.factory(AppEngineAppYaml, {
+		const appYaml = this.assetFactory(AppEngineAppYaml, {
 			config,
 			packageDir: this.packageDir,
 		});
-		const ignoreFile = this.factory(AppEngineIgnoreFile, {
+		const ignoreFile = this.assetFactory(AppEngineIgnoreFile, {
 			packageDir: this.packageDir,
 		});
 		await appYaml.create();
@@ -140,7 +140,7 @@ export class Site extends Asset<SiteProps> {
 
 		const dnsName = await this.getDnsName();
 
-		const appCustomDomain = this.factory(AppEngineCustomDomain, {
+		const appCustomDomain = this.assetFactory(AppEngineCustomDomain, {
 			dnsName,
 		});
 		await appCustomDomain.create();
